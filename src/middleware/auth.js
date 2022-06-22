@@ -2,8 +2,6 @@ const jwt = require('jsonwebtoken')
 import {
     config
 } from 'dotenv'
-import req from 'express/lib/request';
-import request from 'koa/lib/request';
 var Router = require('koa-router');
 var router = new Router();
 
@@ -13,7 +11,7 @@ const app = new Koa();
 config();
 
 const verifyToken = async (ctx, next) => {
-    // const authorization = ctx.headers('Authorization')
+
     const {
         authorization
     } = ctx.header;

@@ -9,7 +9,7 @@ var router = new Router();
 const verifyToken = require('../middleware/auth');
 const XlsxPopulate = require('xlsx-populate');
 
-router.post('/test/bb', verifyToken, async (ctx, next) => {
+router.post('/columns', verifyToken, async (ctx, next) => {
     const {
         columnName,
         description,
@@ -53,12 +53,14 @@ router.post('/test/bb', verifyToken, async (ctx, next) => {
             success: false,
             message: 'Card fails'
         }
-        return;
+
 
     }
+    await next()
+
 
 })
-router.put('/column/:id', async (ctx, next) => {
+router.put('/columns/:id', async (ctx, next) => {
     const {
         columnName,
         description,
@@ -107,7 +109,7 @@ router.put('/column/:id', async (ctx, next) => {
     }
     await next()
 })
-router.get('/getcolumnbyId/:id', verifyToken, async (ctx, next) => {
+router.get('/columns/:id', verifyToken, async (ctx, next) => {
 
     try {
 
@@ -163,9 +165,10 @@ router.get('/getcolumnbyId/:id', verifyToken, async (ctx, next) => {
         return;
 
     }
+    await next()
 
 })
-router.get('/getColumnAll', verifyToken, async (ctx, next) => {
+router.get('/column/List', verifyToken, async (ctx, next) => {
 
     try {
 
@@ -237,6 +240,7 @@ router.get('/getColumnAll', verifyToken, async (ctx, next) => {
         return;
 
     }
+    await next()
 
 })
 

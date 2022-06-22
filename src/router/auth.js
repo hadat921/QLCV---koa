@@ -75,12 +75,14 @@ router.post('/register', async (ctx, next) => {
     } catch (error) {
         console.log(error)
         ctx.status = 500;
-        return ctx.body = {
+        ctx.body = {
             success: false,
             message: 'Error'
         }
 
+
     }
+    await next();
 })
 router.post('/login', async (ctx, next) => {
     const {
@@ -162,6 +164,7 @@ router.post('/login', async (ctx, next) => {
         }
 
     }
+    await next()
 })
 router.put('/logout', verifyToken, async (ctx, next) => {
 
@@ -199,6 +202,7 @@ router.put('/logout', verifyToken, async (ctx, next) => {
         }
 
     }
+    await next()
 })
 
 

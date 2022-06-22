@@ -29,7 +29,10 @@ module.exports = (sequelize, DataTypes) => {
         dueDate: DataTypes.DATE,
         description: DataTypes.STRING,
         attachment: DataTypes.STRING,
-        comment: DataTypes.STRING,
+        comment: {
+            type: DataTypes.STRING,
+            defaultValue: ""
+        },
         idColumn: {
             type: DataTypes.INTEGER,
             references: {

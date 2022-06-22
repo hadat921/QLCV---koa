@@ -8,7 +8,7 @@ var router = new Router();
 
 const verifyToken = require('../middleware/auth');
 const XlsxPopulate = require('xlsx-populate');
-router.post('/test/aa', verifyToken, async (ctx, next) => {
+router.post('/cards', verifyToken, async (ctx, next) => {
     const {
         cardName,
         description,
@@ -16,12 +16,14 @@ router.post('/test/aa', verifyToken, async (ctx, next) => {
         idColumn,
 
     } = ctx.request.body
-    if (!cardName)
-        return ctx.status = 400;
-    ctx.body = {
-        success: false,
-        message: "cardName in correct"
+    if (!cardName) {
+        ctx.status = 400;
+        ctx.body = {
+            success: false,
+            message: "cardName in correct"
 
+        }
+        return
     }
     try {
 
@@ -57,9 +59,9 @@ router.post('/test/aa', verifyToken, async (ctx, next) => {
         return;
 
     }
-
+    await next()
 })
-router.put('/test/:id', verifyToken, async (ctx, next) => {
+router.put('/cards/:id', verifyToken, async (ctx, next) => {
     const {
         cardName,
         description,
@@ -108,9 +110,10 @@ router.put('/test/:id', verifyToken, async (ctx, next) => {
         return;
 
     }
+    await next()
 
 })
-router.put('/addCardtocolumn/:id', verifyToken, async (ctx, next) => {
+router.put('/cards/addToColumn/:id', verifyToken, async (ctx, next) => {
     const {
 
         idColumn,
@@ -152,9 +155,10 @@ router.put('/addCardtocolumn/:id', verifyToken, async (ctx, next) => {
         return;
 
     }
+    await next()
 
 })
-router.get('/getAll', verifyToken, async (ctx, next) => {
+router.get('/card/List', verifyToken, async (ctx, next) => {
 
     try {
 
@@ -230,9 +234,10 @@ router.get('/getAll', verifyToken, async (ctx, next) => {
         return;
 
     }
+    await next()
 
 })
-router.get('/getbyId/:id', verifyToken, async (ctx, next) => {
+router.get('/cards/:id', verifyToken, async (ctx, next) => {
 
     try {
 
@@ -302,9 +307,10 @@ router.get('/getbyId/:id', verifyToken, async (ctx, next) => {
         return;
 
     }
+    await next()
 
 })
-router.delete('/deleteCard/:id', verifyToken, async (ctx, next) => {
+router.delete('/cards/:id', verifyToken, async (ctx, next) => {
     try {
 
         const deletedCards = await Cards.findByPk(ctx.params.id)
@@ -337,7 +343,7 @@ router.delete('/deleteCard/:id', verifyToken, async (ctx, next) => {
         }
 
     }
-
+    await next()
 })
 
 

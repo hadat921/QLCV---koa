@@ -21,7 +21,8 @@ module.exports = {
                 type: Sequelize.STRING
             },
             comment: {
-                type: Sequelize.STRING
+                type: Sequelize.STRING,
+                default: "",
             },
             idColumn: {
                 type: Sequelize.INTEGER,
@@ -55,5 +56,6 @@ module.exports = {
     },
     async down(queryInterface, Sequelize) {
         await queryInterface.dropTable('Cards');
+        await Sequelize
     }
 };
