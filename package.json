@@ -12,7 +12,9 @@
     "koa": "^2.13.4",
     "koa-body": "^5.0.0",
     "koa-bodyparser": "^4.3.0",
+    "koa-logger": "^3.2.1",
     "koa-router": "^10.1.1",
+    "lodash": "^4.17.21",
     "moment": "^2.29.3",
     "morgan": "^1.10.0",
     "pg": "^8.7.3",
@@ -37,7 +39,8 @@
     "build-babel": "babel ./src -d ./build/src",
     "build": "npm run clean && npm run build-babel",
     "production": "npm run build && node ./build/src/app.js",
-    "dev": "nodemon --exec ./node_modules/.bin/babel-node ./src/app.js"
+    "dev": "nodemon --exec ./node_modules/.bin/babel-node ./src/app.js",
+    "start": "nodemon src/app.js --exec babel-node"
   },
   "keywords": [],
   "author": "",

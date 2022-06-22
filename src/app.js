@@ -5,10 +5,12 @@ import bodyParser from 'koa-bodyparser';
 import Koa from 'koa'
 
 let app = new Koa();
+const logger = require('koa-logger');
 
 app.use(koaBody({
     multipart: true
 }))
+app.use(logger())
 app.use(bodyParser({
     enableTypes: ['json'],
     extendTypes: ['application/json'],

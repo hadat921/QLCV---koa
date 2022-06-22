@@ -129,36 +129,31 @@ router.get('/users/:id', verifyToken, async (ctx, next) => {
     await next()
 })
 router.put('/users/:id', verifyToken, async (ctx, next) => {
-    const {
+    let id = ctx.params.id
+    let {
         realName,
         email,
         avatar,
 
 
     } = ctx.request.body
+    let data = await Users.findByPk(id)
+    if (!data) {
+        return;
+    }
+    let dataUpdate = {}
+    if (realName && data.realName != realName) {
+        dataUpdate.realName = realName;
+    }
+    if (email && data.email != email) {
+        dataUpdate.email = email;
+    }
+    if (avatar && data.avatar != avatar) {
+        dataUpdate.avatar = avatar;
+    }
     try {
-        const updatedUser = await Users.findByPk(ctx.userId)
+        await data.update(dataUpdate)
 
-        if (!updatedUser) {
-            ctx.status = 401;
-            ctx.body = {
-                success: false,
-                message: 'Khong tim thay user'
-            }
-            return
-        }
-
-        await updatedUser.update({
-            realName: realName,
-            email: email,
-            avatar: avatar,
-        })
-        ctx.status = 200;
-        ctx.body = {
-            success: true,
-            message: "Update thanh cong user"
-        }
-        return
 
 
 
@@ -170,8 +165,15 @@ router.put('/users/:id', verifyToken, async (ctx, next) => {
             success: false,
             message: 'Internal server error'
         }
+        return;
 
     }
+    ctx.status = 200;
+    ctx.body = {
+        success: true,
+        message: "Update thanh cong user"
+    }
+
     await next()
 })
 

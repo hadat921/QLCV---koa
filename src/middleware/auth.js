@@ -29,11 +29,9 @@ const verifyToken = async (ctx, next) => {
     try {
         const decoded = jwt.verify(authorization, process.env.ACESS_TOKEN_SECRET)
 
-        ctx.userId = decoded.payload;
-        // console.log(ctx.request.userId)
-        await next()
-        //AccessToken = object userId ben file auth.js
-        //Sau khi token dc cho qua, thi file post cho phep gan' token vao Post de request
+        ctx.state.user = {
+            id: decoded.payload
+        };
 
     } catch (error) {
         console.log(error)
@@ -45,6 +43,6 @@ const verifyToken = async (ctx, next) => {
         return;
 
     }
-    await next
+    await next()
 }
 module.exports = verifyToken

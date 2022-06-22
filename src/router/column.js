@@ -8,95 +8,73 @@ var router = new Router();
 
 const verifyToken = require('../middleware/auth');
 const XlsxPopulate = require('xlsx-populate');
+const {
 
-router.post('/columns', verifyToken, async (ctx, next) => {
-    const {
+    validatecolumns
+} = require('../middleware/validate')
+
+router.post('/columns', verifyToken, validatecolumns, async (ctx, next) => {
+    let {
         columnName,
         description,
 
     } = ctx.request.body
-    if (!columnName) {
-        ctx.status = 400;
-        ctx.body = {
-            success: false,
-            message: "colums fail"
-
-        }
-        return;
+    let dataInsert = {
+        columnName: columnName || null,
+        description: description || null,
+        createColumnBy: ctx.userId
     }
+    console.log(ctx.userId)
+    let data = null
+
     try {
 
-        const newColumns = await Columns.create({
-            createColumnBy: ctx.userId,
-            columnName: columnName,
-            description: description
+        data = await Columns.create(
 
-
-        })
-
-        ctx.status = 200;
-
-        ctx.body = {
-            success: true,
-            message: "Tạo cot công việc thành công",
-            data: newColumns,
-
-
-        }
-        return;
-
-
+            dataInsert)
     } catch (error) {
         console.log(error)
         ctx.status = 403;
         ctx.body = {
             success: false,
-            message: 'Card fails'
+            message: 'Column fails'
         }
+        return;
 
 
     }
-    await next()
+    ctx.body = {
+        success: true,
+        message: "Tạo cot công việc thành công",
+        data: data,
+
+    }
 
 
 })
 router.put('/columns/:id', async (ctx, next) => {
-    const {
+    let id = ctx.params.id
+    let {
         columnName,
         description,
 
 
     } = ctx.request.body
-    if (!columnName) {
-        ctx.status = 400;
-        ctx.body = {
-            success: false,
-            message: "cardName in correct"
-        }
+    let data = await Columns.findByPk(id)
+    if (!data) {
 
         return;
     }
+    let dataUpdate = {}
 
+    if (columnName && data.columnName != columnName) {
+        dataUpdate.columnName = columnName;
+    }
+    if (description && data.description != columnName) {
+        dataUpdate.description = description;
+    }
     try {
-
-        const updatedColumn = await Columns.findByPk(ctx.params.id)
-        await updatedColumn.update({
-            columnName: columnName,
-            description: description,
-
-        })
-
-        ctx.status = 200;
-
-        ctx.body = {
-            success: true,
-            message: "Update cot công việc thành công",
-
-
-
-        }
-
-
+        await data.update(dataUpdate)
     } catch (error) {
         console.log(error)
         ctx.status = 403;
@@ -105,8 +83,19 @@ router.put('/columns/:id', async (ctx, next) => {
             message: 'Card fails aa'
         }
         return;
+    }
+    ctx.status = 200;
+
+    ctx.body = {
+        success: true,
+        message: "Update cot công việc thành công",
+
+
 
     }
+
+
+
     await next()
 })
 router.get('/columns/:id', verifyToken, async (ctx, next) => {
