@@ -1,77 +1,114 @@
 import {
     Users
 } from "../models"
-import argon2 from "argon2"
 import {
-    body
-} from "koa/lib/response";
+    Op
+} from 'sequelize'
 const jwt = require('jsonwebtoken')
 var Router = require('koa-router');
 var router = new Router();
 const XlsxPopulate = require('xlsx-populate');
+import {
+    convertUser,
+    convertUserbyId
+} from "../controller/user"
+
 
 const verifyToken = require('../middleware/auth');
 
 router.get('/user/List', verifyToken, async (ctx, next) => {
-    try {
+    const {
+        download,
+        userName,
+        realName,
+        email,
+        phoneNumber,
+        createdAtFrom,
+        createdAtTo
+    } = ctx.query
+    let condition = {}
+    if (userName) {
+        condition.userName = {
+            [Op.substring]: userName
+        }
+    }
+    if (realName) {
+        condition.realName = {
+            [Op.substring]: realName
+        }
+    }
+    if (email) {
+        condition.email = {
+            [Op.substring]: email
+        }
+    }
+    if (phoneNumber) {
+        condition.phoneNumber = {
+            [Op.eq]: phoneNumber
+        }
+    }
+    if (createdAtFrom && createdAtTo) {
+        const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
+        const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
+        condition.createdAt = {
+            [Op.between]: [from, to]
+        }
+    }
+    if (createdAtFrom) {
+        const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
 
+        condition.createdAt = {
+            [Op.gte]: from
+        }
+    }
+    if (createdAtTo) {
+        const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
 
-        let user = await Users.findAll({
-            attributes: [
-                'id', 'userName', 'realName', 'email', 'avatar', 'phoneNumber', 'createdAt', 'updatedAt'
-            ]
+        condition.createdAt = {
+            [Op.lte]: to
+        }
+    }
+    let data = null
+    if (download == "true") {
+
+        data = await Users.findAll({
+            where: condition
         })
+        //tra ve file excel
+        const result = await convertUser(data);
+        ctx.set(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        ctx.set("Content-Disposition", "attachment; filename=" + "Report.xlsx");
 
-        XlsxPopulate.fromBlankAsync()
-            .then(workbook => {
-                // Modify the workbook.
-                workbook.sheet("Sheet1").cell("A1").value("id");
-                workbook.sheet("Sheet1").cell("B1").value("userName");
-                workbook.sheet("Sheet1").cell("C1").value("realName");
-                workbook.sheet("Sheet1").cell("D1").value("email");
-                workbook.sheet("Sheet1").cell("E1").value("avtar");
-                workbook.sheet("Sheet1").cell("F1").value("phoneNumber");
-                workbook.sheet("Sheet1").cell("G1").value("createdAt");
-                workbook.sheet("Sheet1").cell("H1").value("updatedAt");
-
-                let start_row = 2
-                for (let i = 1; i <= user.length; i++) {
-
-
-                    workbook.sheet("Sheet1").cell("A" + start_row).value(`${user[i-1].id}`);
-                    workbook.sheet("Sheet1").cell("B" + start_row).value(`${user[i-1].userName}`);
-                    workbook.sheet("Sheet1").cell("C" + start_row).value(`${user[i-1].realName}`);
-                    workbook.sheet("Sheet1").cell("D" + start_row).value(`${user[i-1].email}`);
-                    workbook.sheet("Sheet1").cell("E" + start_row).value(`${user[i-1].avatar}`);
-                    workbook.sheet("Sheet1").cell("F" + start_row).value(`${user[i-1].phoneNumber}`);
-                    workbook.sheet("Sheet1").cell("G" + start_row).value(`${user[i-1].createdAt}`);
-                    workbook.sheet("Sheet1").cell("H" + start_row).value(`${user[i-1].updatedAt}`);
-                    start_row++;
-
-                }
+        ctx.body = result
+        return;
+    }
 
 
 
-                // Write to file.
-                return workbook.toFileAsync("/home/ha/Desktop/KOA/src/excel/User.xlsx");
-            });
+    data = await Users.findAll({
+        where: condition,
+        attributes: [
+            'id', 'userName', 'realName', 'email', 'avatar', 'phoneNumber', 'createdAt', 'updatedAt'
+        ]
+    })
 
-        ctx.body = {
-            success: true,
-            user
-        }
-    } catch (error) {
-        console.log(error)
-        ctx.status = 500;
-        ctx.json = {
-            success: false,
-            message: 'Internal error server 11 hehe'
-        }
+
+
+    ctx.body = {
+        success: true,
+        data
+
     }
     await next()
 
 })
 router.get('/users/:id', verifyToken, async (ctx, next) => {
+    const {
+        download
+    } = ctx.query
 
     try {
 
@@ -80,32 +117,19 @@ router.get('/users/:id', verifyToken, async (ctx, next) => {
             attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
 
         })
-        // Load a new blank workbook
-        XlsxPopulate.fromBlankAsync()
-            .then(workbook => {
-                // Modify the workbook.
-                workbook.sheet("Sheet1").cell("A1").value("id");
-                workbook.sheet("Sheet1").cell("B1").value("userName");
-                workbook.sheet("Sheet1").cell("C1").value("realName");
-                workbook.sheet("Sheet1").cell("D1").value("email");
-                workbook.sheet("Sheet1").cell("E1").value("avtar");
-                workbook.sheet("Sheet1").cell("F1").value("phoneNumber");
-                workbook.sheet("Sheet1").cell("G1").value("createdAt");
-                workbook.sheet("Sheet1").cell("H1").value("updatedAt");
+        if (download == "true") {
+            console.log("------------------");
+            const result = await convertUserbyId(user);
+            ctx.set(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            ctx.set("Content-Disposition", "attachment; filename=" + "Report.xlsx");
 
-                workbook.sheet("Sheet1").cell("A2").value(`${user.dataValues.id}`);
-                workbook.sheet("Sheet1").cell("B2").value(`${user.dataValues.userName}`);
-                workbook.sheet("Sheet1").cell("C2").value(`${user.dataValues.realName}`);
-                workbook.sheet("Sheet1").cell("D2").value(`${user.dataValues.email}`);
-                workbook.sheet("Sheet1").cell("E2").value(`${user.avatar}`);
-                workbook.sheet("Sheet1").cell("F2").value(`${user.phoneNumber}`);
-                workbook.sheet("Sheet1").cell("G2").value(`${user.createdAt}`);
-                workbook.sheet("Sheet1").cell("H2").value(`${user.updatedAt}`);
+            ctx.body = result
+            return;
 
-
-                // Write to file.
-                return workbook.toFileAsync("/home/ha/Desktop/KOA/src/excel/UserDetail.xlsx");
-            });
+        }
 
         if (!user) {
             ctx.body = {

@@ -2,9 +2,7 @@ import {
     Users
 } from "../models"
 import argon2 from "argon2"
-import {
-    body
-} from "koa/lib/response";
+
 const jwt = require('jsonwebtoken')
 var Router = require('koa-router');
 var router = new Router();
@@ -172,10 +170,10 @@ router.put('/logout', verifyToken, async (ctx, next) => {
 
         const logoutUser = await Users.findByPk(
 
-            ctx.userId
+            ctx.state.user.id
 
         )
-
+        // console.log(ctx.userId)
         //User not authorised or post not found 
         if (!logoutUser.accessToken)
             return res.status(401).json({

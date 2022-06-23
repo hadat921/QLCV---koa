@@ -33,6 +33,8 @@ const verifyToken = async (ctx, next) => {
             id: decoded.payload
         };
 
+        console.log(ctx.state.user)
+
     } catch (error) {
         console.log(error)
         ctx.status = 403;
