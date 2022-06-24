@@ -29,7 +29,7 @@ router.get('/users', verifyToken, async (ctx, next) => {
         data = await Users.findAll({
             where: condition
         })
-        //tra ve file excel
+
         const result = await convertUser(data);
         ctx.set(
             "Content-Type",
@@ -89,7 +89,7 @@ router.get('/users/:id', verifyToken, async (ctx, next) => {
         if (!user) {
             ctx.body = {
                 success: false,
-                message: 'dont find user'
+                message: 'Không tìm thấy User'
             }
             return
         }
@@ -150,7 +150,7 @@ router.put('/users/:id', verifyToken, async (ctx, next) => {
     ctx.status = 200;
     ctx.body = {
         success: true,
-        message: "Update thanh cong user"
+        message: "Update thành công User"
     }
 
     await next()

@@ -13,10 +13,11 @@ import {
     convertCard,
     convertCardID
 } from "../controller/card"
-const {
-    validatecard
+import {
+    validatecard,
+    validateList
 
-} = require('../middleware/validate')
+} from '../validators/validate'
 import {
     serviceCard
 } from "../service/serviceCard"
@@ -55,7 +56,7 @@ router.post('/cards', verifyToken, validatecard, async (ctx, next) => {
                     ctx.status = 500;
                     ctx.body = {
                         success: false,
-                        message: 'Card fails'
+                        message: 'Card lỗi'
                     }
                     return;
 
@@ -74,7 +75,7 @@ router.post('/cards', verifyToken, validatecard, async (ctx, next) => {
             ctx.status = 404;
             ctx.body = {
                 success: false,
-                message: 'idColumn not found'
+                message: 'Không tìm thấy Colums có id như trên'
             }
         }
     } catch (err) {
@@ -104,7 +105,7 @@ router.put('/cards/:id', verifyToken, validatecard, async (ctx, next) => {
         dataUpdate.cardName = cardName;
     }
     if (description && data.description != description) {
-        // tao logs
+
         dataUpdate.description = description;
     }
 
@@ -120,7 +121,7 @@ router.put('/cards/:id', verifyToken, validatecard, async (ctx, next) => {
             ctx.status = 404;
             ctx.body = {
                 success: false,
-                message: 'idColumn not found'
+                message: 'Không tìm thấy column'
             }
             return
         }
@@ -138,7 +139,7 @@ router.put('/cards/:id', verifyToken, validatecard, async (ctx, next) => {
         ctx.status = 500;
         ctx.body = {
             success: false,
-            message: 'Card fails aa'
+            message: 'Card lỗi'
         }
         return;
 
@@ -151,7 +152,7 @@ router.put('/cards/:id', verifyToken, validatecard, async (ctx, next) => {
     await next()
 
 })
-router.get('/cards', verifyToken, async (ctx, next) => {
+router.get('/cards', verifyToken, validateList, async (ctx, next) => {
     const {
         download,
 
@@ -165,7 +166,7 @@ router.get('/cards', verifyToken, async (ctx, next) => {
         data = await Cards.findAll({
             where: condition
         })
-        //tra ve file excel
+
         const result = await convertCard(data);
         ctx.set(
             "Content-Type",
@@ -195,7 +196,7 @@ router.get('/cards', verifyToken, async (ctx, next) => {
 
     ctx.body = {
         data,
-        message: "data ne"
+        message: "Data nè"
     }
     await next()
 
@@ -256,7 +257,7 @@ router.delete('/cards/:id', verifyToken, async (ctx, next) => {
 
 
 
-        //User not authorised or post not found 
+
         if (!deletedCards) {
             ctx.status = 401;
             ctx.body = {
@@ -298,7 +299,7 @@ router.put('/cards-column/:id', verifyToken, async (ctx, next) => {
             ctx.status = 401;
             ctx.body = {
                 success: false,
-                message: 'Post k tim thay hoac user not authorrised'
+                message: 'Không tìm thấy '
             }
         }
         await updatedCard.update({
@@ -309,7 +310,7 @@ router.put('/cards-column/:id', verifyToken, async (ctx, next) => {
 
         ctx.body = {
             success: true,
-            message: "Add card to cot công việc thành công",
+            message: "Thêm card vào cột công việc thành công",
 
 
 
@@ -321,7 +322,7 @@ router.put('/cards-column/:id', verifyToken, async (ctx, next) => {
         ctx.status = 403;
         ctx.body = {
             success: false,
-            message: 'Card fails aa'
+            message: 'Card lỗi'
         }
         return;
 

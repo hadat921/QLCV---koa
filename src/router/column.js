@@ -14,12 +14,13 @@ import {
     serviceColumn
 } from "../service/serviceColumn"
 
+
 const verifyToken = require('../middleware/auth');
-const {
+import {
 
-    validatecolumns
-} = require('../middleware/validate')
-
+    validatecolumns,
+    validateList
+} from "../validators/validate"
 
 router.post('/columns', verifyToken, validatecolumns, async (ctx, next) => {
     let {
@@ -44,7 +45,7 @@ router.post('/columns', verifyToken, validatecolumns, async (ctx, next) => {
         ctx.status = 403;
         ctx.body = {
             success: false,
-            message: 'Column fails'
+            message: 'Column lỗi'
         }
         return;
 
@@ -52,7 +53,7 @@ router.post('/columns', verifyToken, validatecolumns, async (ctx, next) => {
     }
     ctx.body = {
         success: true,
-        message: "Tạo cot công việc thành công",
+        message: "Tạo cột công việc thành công",
         data: data,
 
     }
@@ -89,7 +90,7 @@ router.put('/columns/:id', async (ctx, next) => {
         ctx.status = 403;
         ctx.body = {
             success: false,
-            message: 'Card fails aa'
+            message: 'Column Lỗi'
         }
         return;
     }
@@ -129,7 +130,7 @@ router.get('/columns/:id', verifyToken, async (ctx, next) => {
             ctx.status = 400;
             ctx.body = {
                 success: false,
-                message: 'dont find column'
+                message: 'Không tìm thấy Column'
             }
             return;
         }
@@ -162,7 +163,7 @@ router.get('/columns/:id', verifyToken, async (ctx, next) => {
         ctx.status = 403;
         ctx.body = {
             success: false,
-            message: 'Column fails aa'
+            message: 'Column lỗi'
         }
         return;
 
@@ -170,12 +171,15 @@ router.get('/columns/:id', verifyToken, async (ctx, next) => {
     await next()
 
 })
-router.get('/columns', verifyToken, async (ctx, next) => {
+router.get('/columns', verifyToken, validateList, async (ctx, next) => {
     const {
         download,
 
     } = ctx.query
     let condition = {}
+
+
+
     const columnList = await serviceColumn(condition, ctx)
     let data = null;
     if (download) {

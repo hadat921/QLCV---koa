@@ -21,7 +21,7 @@ router.post('/register', async (ctx, next) => {
         ctx.status = 400;
         ctx.body = {
             success: false,
-            message: " missing username, password or phonenumber"
+            message: " Nhập thiếu password, username hoặc số điện thoại"
         }
         return;
 
@@ -43,7 +43,7 @@ router.post('/register', async (ctx, next) => {
             ctx.status = 400
             ctx.body = {
                 success: false,
-                message: 'Username already taken'
+                message: 'Tài khoản đã được đăng kí'
             }
             return
 
@@ -61,7 +61,7 @@ router.post('/register', async (ctx, next) => {
 
             ctx.body = {
                 success: true,
-                message: 'User created Success',
+                message: 'Đăng kí tài khoản thành công',
             }
             return
         }
