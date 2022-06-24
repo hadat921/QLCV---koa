@@ -175,11 +175,19 @@ router.put('/logout', verifyToken, async (ctx, next) => {
         )
         // console.log(ctx.userId)
         //User not authorised or post not found 
-        if (!logoutUser.accessToken)
-            return res.status(401).json({
+
+        if (logoutUser.accessToken == null) {
+
+            ctx.status = 401;
+            ctx.body = {
                 success: false,
                 message: 'Không tìm thấy User'
-            })
+
+            }
+            return;
+        }
+
+
 
         await logoutUser.update({
                 accessToken: null
