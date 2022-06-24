@@ -21,8 +21,8 @@ app
 
 let PORT = getEnv("PORT")
 
-app.listen(PORT, () => console.log("server chay tren cong hi:" + PORT));
-
-function getEnv(bien) {
-    return process.env[bien]
+function getEnv(variable) {
+    return process.env[variable]
 }
+
+app.listen(PORT, () => console.log("Server running on PORT: " + PORT));
