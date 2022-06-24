@@ -1,12 +1,12 @@
 import {
     Users
 } from "../models"
-import {
-    Op
-} from 'sequelize'
 const jwt = require('jsonwebtoken')
 var Router = require('koa-router');
 var router = new Router();
+import {
+    serviceUser
+} from "../service/serviceUser"
 const XlsxPopulate = require('xlsx-populate');
 import {
     convertUser,
@@ -16,58 +16,13 @@ import {
 
 const verifyToken = require('../middleware/auth');
 
-router.get('/user/List', verifyToken, async (ctx, next) => {
+router.get('/users', verifyToken, async (ctx, next) => {
     const {
         download,
-        userName,
-        realName,
-        email,
-        phoneNumber,
-        createdAtFrom,
-        createdAtTo
+
     } = ctx.query
     let condition = {}
-    if (userName) {
-        condition.userName = {
-            [Op.substring]: userName
-        }
-    }
-    if (realName) {
-        condition.realName = {
-            [Op.substring]: realName
-        }
-    }
-    if (email) {
-        condition.email = {
-            [Op.substring]: email
-        }
-    }
-    if (phoneNumber) {
-        condition.phoneNumber = {
-            [Op.eq]: phoneNumber
-        }
-    }
-    if (createdAtFrom && createdAtTo) {
-        const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
-        const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
-        condition.createdAt = {
-            [Op.between]: [from, to]
-        }
-    }
-    if (createdAtFrom) {
-        const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
-
-        condition.createdAt = {
-            [Op.gte]: from
-        }
-    }
-    if (createdAtTo) {
-        const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
-
-        condition.createdAt = {
-            [Op.lte]: to
-        }
-    }
+    const listUser = await serviceUser(condition, ctx)
     let data = null
     if (download == "true") {
 
@@ -89,7 +44,7 @@ router.get('/user/List', verifyToken, async (ctx, next) => {
 
 
     data = await Users.findAll({
-        where: condition,
+        where: listUser,
         attributes: [
             'id', 'userName', 'realName', 'email', 'avatar', 'phoneNumber', 'createdAt', 'updatedAt'
         ]

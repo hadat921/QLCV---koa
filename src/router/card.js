@@ -3,13 +3,10 @@ import {
     Users,
     Columns
 } from "../models"
-var Router = require('koa-router');
 var router = new Router();
-import {
-    Op
-} from 'sequelize'
+import Router from "koa-router";
 const verifyToken = require('../middleware/auth');
-const XlsxPopulate = require('xlsx-populate');
+
 import _ from 'lodash'
 import moment from "moment";
 import {
@@ -20,6 +17,9 @@ const {
     validatecard
 
 } = require('../middleware/validate')
+import {
+    serviceCard
+} from "../service/serviceCard"
 
 router.post('/cards', verifyToken, validatecard, async (ctx, next) => {
     try {
@@ -154,44 +154,11 @@ router.put('/cards/:id', verifyToken, validatecard, async (ctx, next) => {
 router.get('/cards', verifyToken, async (ctx, next) => {
     const {
         download,
-        idColumn,
-        cardName,
-        createdAtFrom,
-        createdAtTo
+
     } = ctx.query
     let condition = {}
-    if (idColumn) {
-        condition.idColumn = {
-            [Op.eq]: idColumn
-        }
-    }
-    if (cardName) {
-        condition.cardName = {
-            [Op.substring]: cardName
-        }
-    }
-    if (createdAtFrom && createdAtTo) {
-        const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
-        const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
+    const cardList = await serviceCard(condition, ctx)
 
-        condition.createdAt = {
-            [Op.between]: [from, to]
-        }
-    }
-    if (createdAtFrom) {
-        const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
-
-        condition.createdAt = {
-            [Op.gte]: from
-        }
-    }
-    if (createdAtTo) {
-        const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
-
-        condition.createdAt = {
-            [Op.lte]: to
-        }
-    }
     let data = null;
     if (download == "true") {
 
@@ -211,7 +178,7 @@ router.get('/cards', verifyToken, async (ctx, next) => {
     }
 
     data = await Cards.findAll({
-        where: condition,
+        where: cardList,
         include: [{
                 model: Columns,
                 as: "column_info"
@@ -230,7 +197,6 @@ router.get('/cards', verifyToken, async (ctx, next) => {
         data,
         message: "data ne"
     }
-
     await next()
 
 })

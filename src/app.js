@@ -19,6 +19,10 @@ app
     .use(routes.routes())
     .use(routes.allowedMethods())
 
-let PORT = process.env.PORT
+let PORT = getEnv("PORT")
 
 app.listen(PORT, () => console.log("server chay tren cong hi:" + PORT));
+
+function getEnv(bien) {
+    return process.env[bien]
+}

@@ -4,7 +4,7 @@ import {
 import argon2 from "argon2"
 
 const jwt = require('jsonwebtoken')
-var Router = require('koa-router');
+import Router from "koa-router";
 var router = new Router();
 
 const verifyToken = require('../middleware/auth');

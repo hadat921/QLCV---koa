@@ -2,10 +2,10 @@ const jwt = require('jsonwebtoken')
 import {
     config
 } from 'dotenv'
-var Router = require('koa-router');
-var router = new Router();
 
-const Koa = require('koa');
+import Koa from 'koa'
+
+// const Koa = require('koa');
 const app = new Koa();
 
 config();

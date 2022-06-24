@@ -3,24 +3,23 @@ import {
     Users,
     Columns
 } from "../models"
-var Router = require('koa-router');
+import Router from "koa-router";
 var router = new Router();
-import {
-    Op
-} from 'sequelize'
 import _ from 'lodash'
 import {
     convertColumn,
     convertColumnbyId
 } from "../controller/column"
-import moment from "moment";
+import {
+    serviceColumn
+} from "../service/serviceColumn"
 
 const verifyToken = require('../middleware/auth');
-const XlsxPopulate = require('xlsx-populate');
 const {
 
     validatecolumns
 } = require('../middleware/validate')
+
 
 router.post('/columns', verifyToken, validatecolumns, async (ctx, next) => {
     let {
@@ -83,6 +82,7 @@ router.put('/columns/:id', async (ctx, next) => {
         dataUpdate.description = description;
     }
     try {
+        console.log("-----------------------");
         await data.update(dataUpdate)
     } catch (error) {
         console.log(error)
@@ -129,7 +129,7 @@ router.get('/columns/:id', verifyToken, async (ctx, next) => {
             ctx.status = 400;
             ctx.body = {
                 success: false,
-                message: 'dont find user'
+                message: 'dont find column'
             }
             return;
         }
@@ -170,46 +170,13 @@ router.get('/columns/:id', verifyToken, async (ctx, next) => {
     await next()
 
 })
-router.get('/column/List', verifyToken, async (ctx, next) => {
+router.get('/columns', verifyToken, async (ctx, next) => {
     const {
         download,
-        columnName,
-        createColumnBy,
-        createdAtFrom,
-        createdAtTo
+
     } = ctx.query
     let condition = {}
-    if (columnName) {
-        condition.columnName = {
-            [Op.substring]: columnName
-        }
-    }
-    if (createColumnBy) {
-        condition.createColumnBy = {
-            [Op.eq]: createColumnBy
-        }
-    }
-    if (createdAtFrom && createdAtTo) {
-        const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
-        const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
-        condition.createdAt = {
-            [Op.between]: [from, to]
-        }
-    }
-    if (createdAtFrom) {
-        const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
-
-        condition.createdAt = {
-            [Op.gte]: from
-        }
-    }
-    if (createdAtTo) {
-        const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
-
-        condition.createdAt = {
-            [Op.lte]: to
-        }
-    }
+    const columnList = await serviceColumn(condition, ctx)
     let data = null;
     if (download) {
         data = await Columns.findAll({
@@ -227,7 +194,7 @@ router.get('/column/List', verifyToken, async (ctx, next) => {
     }
 
     data = await Columns.findAll({
-        where: condition,
+        where: columnList,
         include: [{
                 model: Cards,
                 as: "cards"
@@ -241,15 +208,6 @@ router.get('/column/List', verifyToken, async (ctx, next) => {
 
 
     })
-    if (_.isEmpty(data)) {
-        ctx.status = 404;
-        ctx.body = {
-            success: false,
-            message: "Columns khong tim thay"
-        }
-        return;
-    }
-
     ctx.status = 200;
 
     ctx.body = {
