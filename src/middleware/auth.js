@@ -5,7 +5,7 @@ import {
 
 import Koa from 'koa'
 
-// const Koa = require('koa');
+
 const app = new Koa();
 
 config();
@@ -15,7 +15,7 @@ const verifyToken = async (ctx, next) => {
     const {
         authorization
     } = ctx.header;
-    // console.log(authorization)
+
 
     if (!authorization) {
         ctx.status = 401;

@@ -173,8 +173,7 @@ router.put('/logout', verifyToken, async (ctx, next) => {
             ctx.state.user.id
 
         )
-        // console.log(ctx.userId)
-        //User not authorised or post not found 
+
 
         if (logoutUser.accessToken == null) {
 
