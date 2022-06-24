@@ -43,7 +43,7 @@ router.post('/register', async (ctx, next) => {
             ctx.status = 400
             ctx.body = {
                 success: false,
-                message: 'Tài khoản đã được đăng kí'
+                message: 'Tài khoản đã tồn tại'
             }
             return
 
@@ -203,7 +203,7 @@ router.put('/logout', verifyToken, async (ctx, next) => {
         ctx.status = 500;
         ctx.body = {
             success: false,
-            message: 'Internal server errora'
+            message: 'Internal server error'
         }
 
     }

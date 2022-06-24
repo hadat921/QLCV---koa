@@ -21,7 +21,7 @@ const verifyToken = async (ctx, next) => {
         ctx.status = 401;
         ctx.body = {
             success: false,
-            message: 'Access token not found hihihi'
+            message: 'Không tìm thấy AccessToken'
         }
         return;
     }
@@ -40,7 +40,7 @@ const verifyToken = async (ctx, next) => {
         ctx.status = 403;
         ctx.body = {
             success: false,
-            message: 'Token sai rui'
+            message: 'AccessToken Sai'
         }
         return;
 

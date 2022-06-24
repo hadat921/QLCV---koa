@@ -1,11 +1,15 @@
-require('dotenv').config()
 import koaBody from "koa-body";
 import routes from './router'
 import bodyParser from 'koa-bodyparser';
 import Koa from 'koa'
+import {
+    config
+} from "dotenv"
+
+config();
 
 let app = new Koa();
-const logger = require('koa-logger');
+import logger from 'koa-logger'
 
 app.use(koaBody({
     multipart: true
