@@ -1,13 +1,11 @@
 import {
     Users
 } from "../models"
-const jwt = require('jsonwebtoken')
-var Router = require('koa-router');
+import Router from 'koa-router'
 var router = new Router();
 import {
     serviceUser
 } from "../service/serviceUser"
-const XlsxPopulate = require('xlsx-populate');
 import {
     convertUser,
     convertUserbyId

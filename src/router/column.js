@@ -5,7 +5,7 @@ import {
 } from "../models"
 import Router from "koa-router";
 var router = new Router();
-import _ from 'lodash'
+
 import {
     convertColumn,
     convertColumnbyId
@@ -15,7 +15,7 @@ import {
 } from "../service/serviceColumn"
 
 
-const verifyToken = require('../middleware/auth');
+import verifyToken from '../middleware/auth'
 import {
 
     validatecolumns,

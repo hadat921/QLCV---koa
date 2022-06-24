@@ -1,5 +1,5 @@
-const fs = require("fs");
-const Router = require("koa-router");
+import Router from 'koa-router';
+import fs from 'fs'
 const router = new Router();
 
 fs.readdirSync(__dirname).forEach(function (file) {

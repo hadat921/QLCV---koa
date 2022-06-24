@@ -5,7 +5,7 @@ import {
 } from "../models"
 var router = new Router();
 import Router from "koa-router";
-const verifyToken = require('../middleware/auth');
+import verifyToken from '../middleware/auth'
 
 import _ from 'lodash'
 import moment from "moment";

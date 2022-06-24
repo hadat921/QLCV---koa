@@ -3,11 +3,11 @@ import {
 } from "../models"
 import argon2 from "argon2"
 
-const jwt = require('jsonwebtoken')
+import jwt from "jsonwebtoken";
 import Router from "koa-router";
 var router = new Router();
 
-const verifyToken = require('../middleware/auth');
+import verifyToken from '../middleware/auth'
 
 router.post('/register', async (ctx, next) => {
     const {
@@ -98,7 +98,7 @@ router.post('/login', async (ctx, next) => {
 
     }
     try {
-        //check for existing user
+
         const user = await Users.findOne({
 
             where: {
@@ -119,7 +119,7 @@ router.post('/login', async (ctx, next) => {
         }
 
 
-        //Username found columnName
+
         const passwordValid = await argon2.verify(user.password, password)
         if (!passwordValid) {
             ctx.status = 400;
@@ -131,7 +131,7 @@ router.post('/login', async (ctx, next) => {
         }
 
 
-        //Pass valid 
+
         const accessToken = jwt.sign({
             payload: user.id
         }, process.env.ACESS_TOKEN_SECRET);
