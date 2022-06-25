@@ -44,7 +44,7 @@ async function convertUser(user) {
 async function convertUserbyId(user) {
     let workbook = await XlsxPopulate.fromBlankAsync();
 
-    // Modify the workbook.
+
     workbook.sheet("Sheet1").cell("A1").value("id");
     workbook.sheet("Sheet1").cell("B1").value("userName");
     workbook.sheet("Sheet1").cell("C1").value("realName");
@@ -62,9 +62,6 @@ async function convertUserbyId(user) {
     workbook.sheet("Sheet1").cell("F2").value(`${user.phoneNumber}`);
     workbook.sheet("Sheet1").cell("G2").value(`${user.createdAt}`);
     workbook.sheet("Sheet1").cell("H2").value(`${user.updatedAt}`);
-
-
-    // Write to file.
     return workbook.outputAsync()
 }
 

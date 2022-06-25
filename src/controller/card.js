@@ -62,10 +62,6 @@ async function convertCardID(card) {
     workbook.sheet("Sheet1").cell("H2").value(`${card.updatedAt}`);
     workbook.sheet("Sheet1").cell("I2").value(`${card.createBy}`);
     workbook.sheet("Sheet1").cell("J2").value(`${card.idColumn}`);
-
-
-
-    // Write to file.
     return workbook.outputAsync()
 
 
@@ -75,4 +71,3 @@ module.exports = {
     convertCard,
     convertCardID
 }
-// Write to file.

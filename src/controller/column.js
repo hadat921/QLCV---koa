@@ -5,7 +5,7 @@ import XlsxPopulate from "xlsx-populate";
 async function convertColumn(columns) {
     let workbook = await XlsxPopulate.fromBlankAsync();
 
-    // Modify the workbook.
+
     workbook.sheet("Sheet1").cell("A1").value("id");
     workbook.sheet("Sheet1").cell("B1").value(`columnName`);
     workbook.sheet("Sheet1").cell("C1").value(`createColumnBy`);
@@ -33,8 +33,6 @@ async function convertColumn(columns) {
 
 
 
-    // Write to file.
-    // return workbook.toFileAsync("/home/ha/Desktop/Test/src/excel/ColumnsAll.xlsx");
 
 }
 async function convertColumnbyId(columns) {
@@ -54,9 +52,6 @@ async function convertColumnbyId(columns) {
     workbook.sheet("Sheet1").cell("E2").value(`${columns.createdAt}`);
     workbook.sheet("Sheet1").cell("F2").value(`${columns.updatedAt}`);
 
-
-
-    // Write to file.
     return workbook.outputAsync()
 
 

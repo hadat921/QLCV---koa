@@ -1,11 +1,10 @@
-const jwt = require('jsonwebtoken')
 import {
     config
 } from 'dotenv'
 
 import Koa from 'koa'
-const app = new Koa();
 import moment from "moment";
+const app = new Koa();
 
 config();
 
@@ -43,8 +42,6 @@ const validatecolumns = async (ctx, next) => {
         }
         return;
     }
-
-
     await next()
 }
 const validateList = async (ctx, next) => {

@@ -2,6 +2,9 @@ import jwt from "jsonwebtoken"
 import {
     config
 } from 'dotenv'
+import {
+    getEnv
+} from "../config/index"
 
 import Koa from 'koa'
 
@@ -27,7 +30,7 @@ const verifyToken = async (ctx, next) => {
     }
 
     try {
-        const decoded = jwt.verify(authorization, process.env.ACESS_TOKEN_SECRET)
+        const decoded = jwt.verify(authorization, getEnv("ACESS_TOKEN_SECRET"))
 
         ctx.state.user = {
             id: decoded.payload

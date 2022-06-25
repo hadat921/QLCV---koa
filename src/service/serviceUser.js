@@ -3,9 +3,6 @@ import {
 } from 'sequelize'
 import moment from "moment";
 
-
-
-
 const serviceUser = async (condition, ctx) => {
     const {
 
@@ -59,22 +56,7 @@ const serviceUser = async (condition, ctx) => {
     }
     return condition;
 
-
-
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
 module.exports = {
     serviceUser
 }

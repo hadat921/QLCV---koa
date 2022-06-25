@@ -3,7 +3,6 @@ import {
 } from 'sequelize'
 import moment from "moment";
 
-
 const serviceCard = async (condition, ctx) => {
     const {
         idColumn,
@@ -43,9 +42,6 @@ const serviceCard = async (condition, ctx) => {
             [Op.lte]: to
         }
     }
-
-
-
     return condition;
 
 

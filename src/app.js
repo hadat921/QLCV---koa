@@ -5,6 +5,9 @@ import Koa from 'koa'
 import {
     config
 } from "dotenv"
+import {
+    getEnv
+} from "../src/config/index"
 
 config();
 
@@ -25,8 +28,6 @@ app
 
 let PORT = getEnv("PORT")
 
-function getEnv(variable) {
-    return process.env[variable]
-}
+
 
 app.listen(PORT, () => console.log("Server running on PORT: " + PORT));

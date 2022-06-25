@@ -2,12 +2,13 @@ import {
     Users
 } from "../models"
 import argon2 from "argon2"
-
 import jwt from "jsonwebtoken";
 import Router from "koa-router";
-var router = new Router();
-
 import verifyToken from '../middleware/auth'
+import {
+    getEnv
+} from "../config";
+var router = new Router();
 
 router.post('/register', async (ctx, next) => {
     const {
@@ -66,10 +67,6 @@ router.post('/register', async (ctx, next) => {
             return
         }
 
-
-
-
-
     } catch (error) {
         console.log(error)
         ctx.status = 500;
@@ -105,10 +102,6 @@ router.post('/login', async (ctx, next) => {
                 userName: userName.toLowerCase().toString()
             }
         })
-
-
-
-
         if (!user) {
             ctx.status = 400;
             ctx.body = {
@@ -117,9 +110,6 @@ router.post('/login', async (ctx, next) => {
             }
             return;
         }
-
-
-
         const passwordValid = await argon2.verify(user.password, password)
         if (!passwordValid) {
             ctx.status = 400;
@@ -129,12 +119,9 @@ router.post('/login', async (ctx, next) => {
             }
             return;
         }
-
-
-
         const accessToken = jwt.sign({
             payload: user.id
-        }, process.env.ACESS_TOKEN_SECRET);
+        }, getEnv("ACESS_TOKEN_SECRET"));
 
         await user.update({
             accessToken: accessToken
@@ -150,9 +137,6 @@ router.post('/login', async (ctx, next) => {
 
 
         }
-
-
-
     } catch (error) {
         console.log(error)
         ctx.status = 500;
@@ -173,8 +157,6 @@ router.put('/logout', verifyToken, async (ctx, next) => {
             ctx.state.user.id
 
         )
-
-
         if (logoutUser.accessToken == null) {
 
             ctx.status = 401;
@@ -185,9 +167,6 @@ router.put('/logout', verifyToken, async (ctx, next) => {
             }
             return;
         }
-
-
-
         await logoutUser.update({
                 accessToken: null
             }
@@ -209,7 +188,4 @@ router.put('/logout', verifyToken, async (ctx, next) => {
     }
     await next()
 })
-
-
-
 module.exports = router;

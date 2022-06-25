@@ -3,7 +3,6 @@ import {
     Users,
     Columns
 } from "../models"
-var router = new Router();
 import Router from "koa-router";
 import verifyToken from '../middleware/auth'
 
@@ -21,6 +20,7 @@ import {
 import {
     serviceCard
 } from "../service/serviceCard"
+var router = new Router();
 
 router.post('/cards', verifyToken, validatecard, async (ctx, next) => {
     try {
@@ -202,54 +202,48 @@ router.get('/cards', verifyToken, validateList, async (ctx, next) => {
 
 })
 router.get('/cards/:id', verifyToken, async (ctx, next) => {
-        const {
-            download
-        } = ctx.query
-        const card = await Cards.findByPk(ctx.params.id, {
-            include: [{
-                    model: Columns,
-                    as: "column_info"
-                },
+    const {
+        download
+    } = ctx.query
+    const card = await Cards.findByPk(ctx.params.id, {
+        include: [{
+                model: Columns,
+                as: "column_info"
+            },
 
-                {
-                    model: Users,
-                    as: "user_info",
-                    attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
-                }
-            ]
-
-
-
-        })
-        if (download == "true") {
-            console.log("------------------");
-            const result = await convertCardID(card);
-            ctx.set(
-                "Content-Type",
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            );
-            ctx.set("Content-Disposition", "attachment; filename=" + "Report.xlsx");
-
-            ctx.body = result
-            return;
-
-        }
+            {
+                model: Users,
+                as: "user_info",
+                attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
+            }
+        ]
 
 
-        ctx.status = 200;
 
-        ctx.body = {
-            success: true,
-            card
-        }
-        await next()
+    })
+    if (download == "true") {
+        console.log("------------------");
+        const result = await convertCardID(card);
+        ctx.set(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        ctx.set("Content-Disposition", "attachment; filename=" + "Report.xlsx");
 
-
+        ctx.body = result
+        return;
 
     }
 
 
-)
+    ctx.status = 200;
+
+    ctx.body = {
+        success: true,
+        card
+    }
+    await next()
+})
 router.delete('/cards/:id', verifyToken, async (ctx, next) => {
     try {
 

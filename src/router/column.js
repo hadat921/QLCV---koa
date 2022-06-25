@@ -225,9 +225,4 @@ router.get('/columns', verifyToken, validateList, async (ctx, next) => {
 
 
 })
-
-
-
-
-
 module.exports = router;

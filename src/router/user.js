@@ -153,14 +153,4 @@ router.put('/users/:id', verifyToken, async (ctx, next) => {
 
     await next()
 })
-
-
-
-
-
-
-
-
-
-
 module.exports = router;
