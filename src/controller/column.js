@@ -1,71 +1,226 @@
-import XlsxPopulate from "xlsx-populate";
+import {
+    Cards,
+    Users,
+    Columns
+} from "../models"
+import Router from "koa-router";
+var router = new Router();
 
-
-
-async function convertColumn(columns) {
-    let workbook = await XlsxPopulate.fromBlankAsync();
-
-
-    workbook.sheet("Sheet1").cell("A1").value("id");
-    workbook.sheet("Sheet1").cell("B1").value(`columnName`);
-    workbook.sheet("Sheet1").cell("C1").value(`createColumnBy`);
-    workbook.sheet("Sheet1").cell("D1").value(`description`);
-    workbook.sheet("Sheet1").cell("E1").value(`createdAt`);
-    workbook.sheet("Sheet1").cell("F1").value(`updatedAt`);
-
-
-    let start_row = 2
-    for (let i = 1; i <= columns.length; i++) {
-
-
-        workbook.sheet("Sheet1").cell("A" + start_row).value(`${columns[i-1].id}`);
-        workbook.sheet("Sheet1").cell("B" + start_row).value(`${columns[i-1].columnName}`);
-        workbook.sheet("Sheet1").cell("C" + start_row).value(`${columns[i-1].createColumnBy}`);
-        workbook.sheet("Sheet1").cell("D" + start_row).value(`${columns[i-1].description}`);
-
-
-        workbook.sheet("Sheet1").cell("E" + start_row).value(`${columns[i-1].createdAt}`);
-        workbook.sheet("Sheet1").cell("F" + start_row).value(`${columns[i-1].updatedAt}`);
-        start_row++;
-
-    }
-    return workbook.outputAsync()
-
-
-
-
-}
-async function convertColumnbyId(columns) {
-    let workbook = await XlsxPopulate.fromBlankAsync();
-    workbook.sheet("Sheet1").cell("A1").value("id");
-    workbook.sheet("Sheet1").cell("B1").value(`columnName`);
-    workbook.sheet("Sheet1").cell("C1").value(`createColumnBy`);
-    workbook.sheet("Sheet1").cell("D1").value(`description`);
-    workbook.sheet("Sheet1").cell("E1").value(`createdAt`);
-    workbook.sheet("Sheet1").cell("F1").value(`updatedAt`);
-
-
-    workbook.sheet("Sheet1").cell("A2").value(`${columns.id}`);
-    workbook.sheet("Sheet1").cell("B2").value(`${columns.columnName}`);
-    workbook.sheet("Sheet1").cell("C2").value(`${columns.createColumnBy}`);
-    workbook.sheet("Sheet1").cell("D2").value(`${columns.description}`);
-    workbook.sheet("Sheet1").cell("E2").value(`${columns.createdAt}`);
-    workbook.sheet("Sheet1").cell("F2").value(`${columns.updatedAt}`);
-
-    return workbook.outputAsync()
-
-
-}
-
-
-
-
-
-
-
-
-
-module.exports = {
+import {
     convertColumn,
     convertColumnbyId
+} from "../controller/columnExcel"
+import {
+    serviceColumn
+} from "../service/serviceColumn"
+
+
+
+const columns = async (ctx, next) => {
+    const {
+        download,
+
+    } = ctx.query
+    let condition = {}
+
+
+
+    const columnList = await serviceColumn(condition, ctx)
+    let data = null;
+    if (download) {
+        data = await Columns.findAll({
+            where: condition
+        })
+        const result = await convertColumn(data);
+        ctx.set(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        ctx.set("Content-Disposition", "attachment; filename=" + "Report.xlsx");
+
+        ctx.body = result
+        return;
+    }
+
+    data = await Columns.findAll({
+        where: columnList,
+        include: [{
+                model: Cards,
+                as: "cards"
+            },
+            {
+                model: Users,
+                as: "user_info",
+                attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
+            }
+        ]
+
+
+    })
+
+    ctx.status = 200;
+    ctx.body = {
+        success: true,
+        data
+    }
+
+
+    return;
+}
+const getColumnById = async (ctx, next) => {
+    const {
+        download
+    } = ctx.query
+    try {
+
+        const columns = await Columns.findByPk(ctx.params.id, {
+            include: [{
+                    model: Cards,
+                    as: "cards"
+                },
+                {
+                    model: Users,
+                    as: "user_info",
+                    attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
+                }
+            ]
+        })
+        if (!columns) {
+            ctx.status = 400;
+            ctx.body = {
+                success: false,
+                message: 'Không tìm thấy Column'
+            }
+            return;
+        }
+        if (download == "true") {
+            console.log("------------------");
+            const result = await convertColumnbyId(columns);
+            ctx.set(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            ctx.set("Content-Disposition", "attachment; filename=" + "Report.xlsx");
+
+            ctx.body = result
+            return;
+
+        }
+
+
+
+        ctx.status = 200;
+
+        ctx.body = {
+            success: true,
+            columns
+        }
+
+
+    } catch (error) {
+        console.log(error)
+        ctx.status = 403;
+        ctx.body = {
+            success: false,
+            message: 'Column lỗi'
+        }
+        return;
+
+    }
+    await next()
+
+}
+const updateColumById = async (ctx, next) => {
+    let id = ctx.params.id
+    let {
+        columnName,
+        description,
+
+
+    } = ctx.request.body
+    let data = await Columns.findByPk(id)
+    if (!data) {
+
+        return;
+    }
+    let dataUpdate = {}
+
+    if (columnName && data.columnName != columnName) {
+        dataUpdate.columnName = columnName;
+    }
+    if (description && data.description != columnName) {
+        dataUpdate.description = description;
+    }
+    try {
+
+        await data.update(dataUpdate)
+    } catch (error) {
+        console.log(error)
+        ctx.status = 403;
+        ctx.body = {
+            success: false,
+            message: 'Column Lỗi'
+        }
+        return;
+    }
+    ctx.status = 200;
+
+    ctx.body = {
+        success: true,
+        message: "Update cot công việc thành công",
+
+    }
+
+
+
+
+    await next()
+}
+const createColumn = async (ctx, next) => {
+    let {
+        columnName,
+        description,
+
+    } = ctx.request.body
+    let dataInsert = {
+        columnName: columnName || null,
+        description: description || null,
+        createColumnBy: ctx.state.user.id
+    }
+    let data = null
+
+    try {
+
+        data = await Columns.create(
+
+            dataInsert)
+    } catch (error) {
+        console.log(error)
+        ctx.status = 403;
+        ctx.body = {
+            success: false,
+            message: 'Column lỗi'
+        }
+        return;
+
+
+    }
+    ctx.body = {
+        success: true,
+        message: "Tạo cột công việc thành công",
+        data: data,
+
+    }
+
+    await next()
+
+
+}
+
+
+export {
+    columns,
+    getColumnById,
+    updateColumById,
+    createColumn
 }

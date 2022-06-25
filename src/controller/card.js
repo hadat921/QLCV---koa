@@ -1,73 +1,295 @@
-import XlsxPopulate from "xlsx-populate";
+import {
+    Cards,
+    Users,
+    Columns
+} from "../models"
+import {
+    serviceCard
+} from "../service/serviceCard"
+import moment from "moment"
+import _ from 'lodash'
 
-async function convertCard(card) {
-    let workbook = await XlsxPopulate.fromBlankAsync();
+const cards = async (ctx, next) => {
+    const {
+        download,
 
-    // Modify the workbook.
-    workbook.sheet("Sheet1").cell("A1").value("id");
-    workbook.sheet("Sheet1").cell("B1").value("cardName");
-    workbook.sheet("Sheet1").cell("C1").value("dueDate");
-    workbook.sheet("Sheet1").cell("D1").value("description");
-    workbook.sheet("Sheet1").cell("E1").value("attachment");
-    workbook.sheet("Sheet1").cell("F1").value("comment");
-    workbook.sheet("Sheet1").cell("G1").value("createdAt");
-    workbook.sheet("Sheet1").cell("H1").value("updatedAt");
-    workbook.sheet("Sheet1").cell("I1").value("createBy");
-    workbook.sheet("Sheet1").cell("J1").value("idColumn");
+    } = ctx.query
 
-    let start_row = 2
-    for (let i = 1; i <= card.length; i++) {
+    const condition = await serviceCard(ctx)
+
+    let data = null;
+    if (download == "true") {
+
+        data = await Cards.findAll({
+            where: condition
+        })
+
+        const result = await convertCard(data);
+        ctx.set(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        ctx.set("Content-Disposition", "attachment; filename=" + "Report.xlsx");
+
+        ctx.body = result
+        return;
+    }
+
+    data = await Cards.findAll({
+        where: condition,
+        include: [{
+                model: Columns,
+                as: "column_info"
+            },
+            {
+                model: Users,
+                as: "user_info",
+                attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
+            }
+        ]
+
+    })
 
 
-        workbook.sheet("Sheet1").cell("A" + start_row).value(`${card[i-1].id}`);
-        workbook.sheet("Sheet1").cell("B" + start_row).value(`${card[i-1].cardName}`);
-        workbook.sheet("Sheet1").cell("C" + start_row).value(`${card[i-1].dueDate}`);
-        workbook.sheet("Sheet1").cell("D" + start_row).value(`${card[i-1].description}`);
-        workbook.sheet("Sheet1").cell("E" + start_row).value(`${card[i-1].attachment}`);
-        workbook.sheet("Sheet1").cell("F" + start_row).value(`${card[i-1].comment}`);
-        workbook.sheet("Sheet1").cell("G" + start_row).value(`${card[i-1].createdAt}`);
-        workbook.sheet("Sheet1").cell("H" + start_row).value(`${card[i-1].updatedAt}`);
-        workbook.sheet("Sheet1").cell("I" + start_row).value(`${card[i-1].createBy}`);
-        workbook.sheet("Sheet1").cell("J" + start_row).value(`${card[i-1].idColumn}`);
-        start_row++;
+    ctx.body = {
+        data,
+        message: "Data nè"
+    }
+    await next()
+
+
+
+}
+const createCard = async (ctx, next) => {
+    try {
+        let {
+            cardName,
+            description,
+            dueDate,
+            idColumn,
+
+        } = ctx.request.body;
+        let dataInsert = {
+            cardName: cardName || null,
+            description: description || null,
+            dueDate: dueDate ? moment(dueDate).format("YYYY-MM-DD HH:mm:ss") : null,
+            idColumn: idColumn || null,
+            createBy: ctx.state.user.id
+
+        }
+
+        if (idColumn) {
+            let checkData = await Columns.findOne({
+                where: {
+                    id: idColumn
+                }
+            })
+            if (checkData) {
+                let data = null
+                try {
+                    data = await Cards.create(dataInsert)
+
+                } catch (error) {
+                    console.log(error)
+                    ctx.status = 500;
+                    ctx.body = {
+                        success: false,
+                        message: 'Card lỗi'
+                    }
+                    return;
+
+                }
+                ctx.body = {
+                    success: true,
+                    message: "Tạo thẻ công việc thành công",
+                    data: data,
+                }
+
+
+                return;
+            }
+
+
+            ctx.status = 404;
+            ctx.body = {
+                success: false,
+                message: 'Không tìm thấy Colums có id như trên'
+            }
+            return;
+        }
+    } catch (err) {
+        console.log("Err-------", err)
+        return
+    }
+
+    await next()
+
+}
+const updateCard = async (ctx, next) => {
+    let id = ctx.params.id
+    let {
+
+        cardName,
+        description,
+        dueDate,
+        idColumn,
+
+    } = ctx.request.body
+    let data = await Cards.findByPk(id)
+    if (!data) {
+        return;
+    }
+    let dataUpdate = {}
+    if (cardName && data.cardName != cardName) {
+        dataUpdate.cardName = cardName;
+    }
+    if (description && data.description != description) {
+
+        dataUpdate.description = description;
+    }
+    if (_.isEmpty(dataUpdate)) {
+        ctx.body = {
+            success: "true",
+            message: " Cập nhật thành công, thông tin không có sự thay đổi"
+        }
+        return;
+    }
+
+    if (idColumn && data.idColumn != idColumn) {
+        let checkData = await Columns.findOne({
+            where: {
+                id: idColumn
+            }
+        })
+        console.log(checkData)
+
+        if (!checkData) {
+            ctx.status = 404;
+            ctx.body = {
+                success: false,
+                message: 'Không tìm thấy column'
+            }
+            return
+        }
+        dataUpdate.idColumn = idColumn;
+    }
+    if (dueDate && data.dueDate != dueDate) {
+        dataUpdate.dueDate = dueDate ? moment(dueDate).format("YYYY-MM-DD HH:mm:ss") : null;
+    }
+
+    try {
+        await data.update(dataUpdate)
+
+    } catch (error) {
+        console.log(error)
+        ctx.status = 500;
+        ctx.body = {
+            success: false,
+            message: 'Card lỗi'
+        }
+        return;
+
+    }
+    ctx.body = {
+        success: true,
+        message: "Update thẻ công việc thành công ",
+        data: data
+    }
+    await next()
+
+}
+const getCardById = async (ctx, next) => {
+    const {
+        download
+    } = ctx.query
+    const card = await Cards.findByPk(ctx.params.id, {
+        include: [{
+                model: Columns,
+                as: "column_info"
+            },
+
+            {
+                model: Users,
+                as: "user_info",
+                attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
+            }
+        ]
+
+
+
+    })
+    if (download == "true") {
+        console.log("------------------");
+        const result = await convertCardID(card);
+        ctx.set(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        ctx.set("Content-Disposition", "attachment; filename=" + "Report.xlsx");
+
+        ctx.body = result
+        return;
 
     }
 
-    return workbook.outputAsync()
 
+    ctx.status = 200;
+
+    ctx.body = {
+        success: true,
+        card
+    }
+    return;
+    await next()
 }
+const putCardById = async (ctx, next) => {
+    const {
 
-async function convertCardID(card) {
-    let workbook = await XlsxPopulate.fromBlankAsync();
-    XlsxPopulate.fromBlankAsync()
-    workbook.sheet("Sheet1").cell("A1").value("id");
-    workbook.sheet("Sheet1").cell("B1").value("cardName");
-    workbook.sheet("Sheet1").cell("C1").value("dueDate");
-    workbook.sheet("Sheet1").cell("D1").value("description");
-    workbook.sheet("Sheet1").cell("E1").value("attachment");
-    workbook.sheet("Sheet1").cell("F1").value("comment");
-    workbook.sheet("Sheet1").cell("G1").value("createdAt");
-    workbook.sheet("Sheet1").cell("H1").value("updatedAt");
-    workbook.sheet("Sheet1").cell("I1").value("createBy");
-    workbook.sheet("Sheet1").cell("J1").value("idColumn");
+        idColumn,
+
+    } = ctx.request.body
+
+    try {
+
+        const updatedCard = await Cards.findByPk(ctx.params.id)
+        if (!updatedCard) {
+            ctx.status = 401;
+            ctx.body = {
+                success: false,
+                message: 'Không tìm thấy '
+            }
+        }
+        await updatedCard.update({
+            idColumn: idColumn
+        })
+
+        ctx.status = 200;
+
+        ctx.body = {
+            success: true,
+            message: "Thêm card vào cột công việc thành công",
 
 
-    workbook.sheet("Sheet1").cell("A2").value(`${card.id}`);
-    workbook.sheet("Sheet1").cell("B2").value(`${card.cardName}`);
-    workbook.sheet("Sheet1").cell("C2").value(`${card.dueDate}`);
-    workbook.sheet("Sheet1").cell("D2").value(`${card.description}`);
-    workbook.sheet("Sheet1").cell("E2").value(`${card.attachment}`);
-    workbook.sheet("Sheet1").cell("F2").value(`${card.comment}`);
-    workbook.sheet("Sheet1").cell("G2").value(`${card.createdAt}`);
-    workbook.sheet("Sheet1").cell("H2").value(`${card.updatedAt}`);
-    workbook.sheet("Sheet1").cell("I2").value(`${card.createBy}`);
-    workbook.sheet("Sheet1").cell("J2").value(`${card.idColumn}`);
-    return workbook.outputAsync()
+
+        }
 
 
+    } catch (error) {
+        console.log(error)
+        ctx.status = 403;
+        ctx.body = {
+            success: false,
+            message: 'Card lỗi'
+        }
+        return;
+
+    }
+    await next()
 }
-
-module.exports = {
-    convertCard,
-    convertCardID
+export {
+    cards,
+    createCard,
+    updateCard,
+    getCardById,
+    putCardById
 }

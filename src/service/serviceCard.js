@@ -3,13 +3,14 @@ import {
 } from 'sequelize'
 import moment from "moment";
 
-const serviceCard = async (condition, ctx) => {
+const serviceCard = async (ctx) => {
     const {
         idColumn,
         cardName,
         createdAtFrom,
         createdAtTo
     } = ctx.query
+    let condition = {}
     if (idColumn) {
         condition.idColumn = {
             [Op.eq]: idColumn
