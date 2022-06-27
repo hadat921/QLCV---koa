@@ -13,18 +13,11 @@ const Column = db.define('Column', {
     },
     createColumnBy: {
         type: DataTypes.INTEGER,
-        // references: {
-        //     model: "Users",
-        //     key: "id",
-        //     as: "createColumnBy"
-        // }
     },
     description: {
         type: DataTypes.STRING,
         allowNull: true
     }
-}, {
-    // Other model options go here
 });
 
 export default Column;

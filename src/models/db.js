@@ -12,7 +12,6 @@ const db = new Sequelize('koa', 'root', 'root', {
 })
 db.authenticate().then(async () => {
     console.log('Connection thanh cong');
-    // await db.sync();
   })
   .catch((error) => {
     console.error('Unable to connect to the database:', error);

@@ -72,8 +72,6 @@ const validateAuth = async (ctx, next) => {
     }
     await next()
 }
-
-
 const validateLogin = async (ctx, next) => {
     const {
         userName,

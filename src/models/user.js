@@ -36,8 +36,6 @@ const User = db.define('User', {
 
     },
 
-}, {
-    // Other model options go here
 });
 
 

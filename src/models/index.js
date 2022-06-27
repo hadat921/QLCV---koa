@@ -15,9 +15,7 @@ User.hasMany(Column, {
 Card.belongsTo(User, {
     foreignKey: 'createBy',
     as: "user_info",
-})
-
-;
+});
 Card.belongsTo(Column, {
     foreignKey: 'idColumn',
     as: "column_info"

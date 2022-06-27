@@ -35,8 +35,6 @@ const Card = db.define('Card', {
         allowNull: false
     },
 
-}, {
-    // Other model options go here
 });
 
 
