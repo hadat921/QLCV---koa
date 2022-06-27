@@ -19,7 +19,7 @@ const validatecolumns = async (ctx, next) => {
         ctx.status = 400;
         ctx.body = {
             success: false,
-            message: "colums lỗi"
+            message: "colums fails"
 
         }
         return;
