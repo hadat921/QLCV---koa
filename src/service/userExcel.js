@@ -29,17 +29,7 @@ async function convertUser(user) {
         start_row++;
 
     }
-
-
-
-
     return workbook.outputAsync()
-
-
-
-
-
-
 }
 async function convertUserbyId(user) {
     let workbook = await XlsxPopulate.fromBlankAsync();
@@ -64,16 +54,6 @@ async function convertUserbyId(user) {
     workbook.sheet("Sheet1").cell("H2").value(`${user.updatedAt}`);
     return workbook.outputAsync()
 }
-
-
-
-
-
-
-
-
-
-
 module.exports = {
     convertUser,
     convertUserbyId

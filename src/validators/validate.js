@@ -16,7 +16,6 @@ const validateList = async (ctx, next) => {
     if (createdAtFrom && createdAtTo) {
         let result = moment(createdAtFrom, "YYYY-MM-DD", true).isValid();
         let result1 = moment(createdAtTo, "YYYY-MM-DD", true).isValid();
-        console.log(result);
         if (!result || !result1) {
 
             ctx.body = {
@@ -28,7 +27,6 @@ const validateList = async (ctx, next) => {
     }
     if (createdAtFrom) {
         let result = moment(createdAtFrom, "YYYY-MM-DD", true).isValid();
-        console.log(result);
         if (!result) {
 
             ctx.body = {
@@ -40,7 +38,6 @@ const validateList = async (ctx, next) => {
     }
     if (createdAtTo) {
         let result = moment(createdAtTo, "YYYY-MM-DD", true).isValid();
-        console.log(result);
         if (!result) {
 
             ctx.body = {

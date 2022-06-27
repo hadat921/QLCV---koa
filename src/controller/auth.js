@@ -6,7 +6,6 @@ import jwt from "jsonwebtoken";
 import {
     getEnv
 } from "../config";
-
 const register = async (ctx, next) => {
     const {
         password,
@@ -42,7 +41,6 @@ const register = async (ctx, next) => {
                 password: hashedpassword,
                 phoneNumber
             }
-            console.log(dataInsert)
             const newUser = await Users.create(dataInsert)
             await newUser.save()
 
@@ -54,7 +52,6 @@ const register = async (ctx, next) => {
         }
 
     } catch (error) {
-        console.log(error)
         ctx.status = 500;
         ctx.body = {
             success: false,
@@ -124,11 +121,10 @@ const login = async (ctx, next) => {
 
         }
     } catch (error) {
-        console.log(error)
         ctx.status = 500;
         ctx.body = {
             success: false,
-            message: 'Internal server error11'
+            message: 'Internal server error'
         }
 
     }
@@ -163,7 +159,6 @@ const logout = async (ctx, next) => {
 
         }
     } catch (error) {
-        console.log(error)
         ctx.status = 500;
         ctx.body = {
             success: false,

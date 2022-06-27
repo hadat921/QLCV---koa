@@ -3,18 +3,13 @@ import {
     Users,
     Columns
 } from "../models"
-import Router from "koa-router";
-var router = new Router();
-
 import {
     convertColumn,
     convertColumnbyId
-} from "../controller/columnExcel"
+} from "../service/columnExcel"
 import {
     serviceColumn
 } from "../service/serviceColumn"
-
-
 
 const columns = async (ctx, next) => {
     const {
@@ -22,9 +17,6 @@ const columns = async (ctx, next) => {
 
     } = ctx.query
     let condition = {}
-
-
-
     const columnList = await serviceColumn(condition, ctx)
     let data = null;
     if (download) {
@@ -57,15 +49,13 @@ const columns = async (ctx, next) => {
 
 
     })
-
     ctx.status = 200;
     ctx.body = {
         success: true,
         data
     }
 
-
-    return;
+    await next()
 }
 const getColumnById = async (ctx, next) => {
     const {
@@ -73,7 +63,7 @@ const getColumnById = async (ctx, next) => {
     } = ctx.query
     try {
 
-        const columns = await Columns.findByPk(ctx.params.id, {
+        const column = await Columns.findByPk(ctx.params.id, {
             include: [{
                     model: Cards,
                     as: "cards"
@@ -85,7 +75,7 @@ const getColumnById = async (ctx, next) => {
                 }
             ]
         })
-        if (!columns) {
+        if (!column) {
             ctx.status = 400;
             ctx.body = {
                 success: false,
@@ -94,8 +84,7 @@ const getColumnById = async (ctx, next) => {
             return;
         }
         if (download == "true") {
-            console.log("------------------");
-            const result = await convertColumnbyId(columns);
+            const result = await convertColumnbyId(column);
             ctx.set(
                 "Content-Type",
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -106,14 +95,10 @@ const getColumnById = async (ctx, next) => {
             return;
 
         }
-
-
-
         ctx.status = 200;
-
         ctx.body = {
             success: true,
-            columns
+            column
         }
 
 
@@ -128,7 +113,6 @@ const getColumnById = async (ctx, next) => {
 
     }
     await next()
-
 }
 const updateColumById = async (ctx, next) => {
     let id = ctx.params.id
@@ -168,19 +152,13 @@ const updateColumById = async (ctx, next) => {
     ctx.body = {
         success: true,
         message: "Update cot công việc thành công",
-
     }
-
-
-
-
     await next()
 }
 const createColumn = async (ctx, next) => {
     let {
         columnName,
         description,
-
     } = ctx.request.body
     let dataInsert = {
         columnName: columnName || null,
@@ -190,10 +168,7 @@ const createColumn = async (ctx, next) => {
     let data = null
 
     try {
-
-        data = await Columns.create(
-
-            dataInsert)
+        data = await Columns.create(dataInsert)
     } catch (error) {
         console.log(error)
         ctx.status = 403;
@@ -202,8 +177,6 @@ const createColumn = async (ctx, next) => {
             message: 'Column lỗi'
         }
         return;
-
-
     }
     ctx.body = {
         success: true,
@@ -211,12 +184,8 @@ const createColumn = async (ctx, next) => {
         data: data,
 
     }
-
     await next()
-
-
 }
-
 
 export {
     columns,

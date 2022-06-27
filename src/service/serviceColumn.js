@@ -27,8 +27,6 @@ const serviceColumn = async (condition, ctx) => {
         const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
         const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
 
-        console.log(from);
-        console.log(to);
         condition.createdAt = {
             [Op.between]: [from, to]
         }
@@ -50,20 +48,6 @@ const serviceColumn = async (condition, ctx) => {
     }
     return condition;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 module.exports = {
     serviceColumn

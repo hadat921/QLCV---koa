@@ -7,8 +7,6 @@ import {
 } from "../config/index"
 
 import Koa from 'koa'
-
-
 const app = new Koa();
 
 config();
@@ -35,8 +33,6 @@ const verifyToken = async (ctx, next) => {
         ctx.state.user = {
             id: decoded.payload
         };
-
-        console.log(ctx.state.user)
 
     } catch (error) {
         console.log(error)

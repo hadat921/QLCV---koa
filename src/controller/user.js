@@ -1,17 +1,13 @@
 import {
     Users
 } from "../models"
-import Router from 'koa-router'
-var router = new Router();
 import {
     serviceUser
 } from "../service/serviceUser"
 import {
     convertUser,
     convertUserbyId
-} from "../controller/userExcel"
-
-
+} from "../service/userExcel"
 
 const users = async (ctx, next) => {
     const {
@@ -65,7 +61,6 @@ const getUserById = async (ctx, next) => {
 
         })
         if (download == "true") {
-            console.log("------------------");
             const result = await convertUserbyId(user);
             ctx.set(
                 "Content-Type",

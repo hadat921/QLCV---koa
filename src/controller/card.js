@@ -8,6 +8,10 @@ import {
 } from "../service/serviceCard"
 import moment from "moment"
 import _ from 'lodash'
+import {
+    convertCard,
+    convertCardID
+} from "../service/cardExcel"
 
 const cards = async (ctx, next) => {
     const {
@@ -56,12 +60,8 @@ const cards = async (ctx, next) => {
         message: "Data nè"
     }
     await next()
-
-
-
 }
 const createCard = async (ctx, next) => {
-    console.log("-----------");
     try {
         let {
             cardName,
@@ -78,21 +78,17 @@ const createCard = async (ctx, next) => {
             createBy: ctx.state.user.id
 
         }
-
-
         let data = null
         try {
             data = await Cards.create(dataInsert)
 
         } catch (error) {
-            console.log(error)
             ctx.status = 500;
             ctx.body = {
                 success: false,
                 message: 'Card lỗi'
             }
             return;
-
         }
         ctx.body = {
             success: true,
@@ -103,12 +99,10 @@ const createCard = async (ctx, next) => {
 
         return;
     } catch (err) {
-        console.log("Err-------", err)
-        return
+        console.log(err)
+
     }
     await next()
-
-
 }
 const updateCard = async (ctx, next) => {
     let id = ctx.params.id
@@ -146,8 +140,6 @@ const updateCard = async (ctx, next) => {
                 id: idColumn
             }
         })
-        console.log(checkData)
-
         if (!checkData) {
             ctx.status = 404;
             ctx.body = {
@@ -199,12 +191,8 @@ const getCardById = async (ctx, next) => {
                 attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
             }
         ]
-
-
-
     })
     if (download == "true") {
-        console.log("------------------");
         const result = await convertCardID(card);
         ctx.set(
             "Content-Type",
@@ -224,7 +212,7 @@ const getCardById = async (ctx, next) => {
         success: true,
         card
     }
-    return;
+
     await next()
 }
 const putCardById = async (ctx, next) => {
@@ -253,12 +241,7 @@ const putCardById = async (ctx, next) => {
         ctx.body = {
             success: true,
             message: "Thêm card vào cột công việc thành công",
-
-
-
         }
-
-
     } catch (error) {
         console.log(error)
         ctx.status = 403;
@@ -271,10 +254,41 @@ const putCardById = async (ctx, next) => {
     }
     await next()
 }
+const deleteCard = async (ctx, next) => {
+    try {
+
+        const deletedCards = await Cards.findByPk(ctx.params.id)
+        if (!deletedCards) {
+            ctx.status = 401;
+            ctx.body = {
+                success: false,
+                message: 'Không tìm thấy Cards'
+            }
+            return;
+        }
+        await deletedCards.destroy();
+        ctx.body = {
+            success: true,
+            message: "Xóa thành công Card"
+
+        }
+    } catch (error) {
+        console.log(error)
+        ctx.status = 500;
+        ctx.body = {
+            success: false,
+            message: 'Internal server error'
+        }
+
+    }
+    await next()
+
+}
 export {
     cards,
     createCard,
     updateCard,
     getCardById,
-    putCardById
+    putCardById,
+    deleteCard
 }

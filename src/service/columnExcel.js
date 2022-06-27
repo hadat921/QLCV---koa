@@ -30,10 +30,6 @@ async function convertColumn(columns) {
 
     }
     return workbook.outputAsync()
-
-
-
-
 }
 async function convertColumnbyId(columns) {
     let workbook = await XlsxPopulate.fromBlankAsync();
@@ -56,14 +52,6 @@ async function convertColumnbyId(columns) {
 
 
 }
-
-
-
-
-
-
-
-
 
 module.exports = {
     convertColumn,

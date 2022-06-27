@@ -115,10 +115,9 @@ const validateLogin = async (ctx, next) => {
 
 
     }
+    await next()
 
 }
-
-
 
 export {
     validateAuth,
