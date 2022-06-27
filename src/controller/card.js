@@ -61,6 +61,7 @@ const cards = async (ctx, next) => {
 
 }
 const createCard = async (ctx, next) => {
+    console.log("-----------");
     try {
         let {
             cardName,
@@ -78,51 +79,35 @@ const createCard = async (ctx, next) => {
 
         }
 
-        if (idColumn) {
-            let checkData = await Columns.findOne({
-                where: {
-                    id: idColumn
-                }
-            })
-            if (checkData) {
-                let data = null
-                try {
-                    data = await Cards.create(dataInsert)
 
-                } catch (error) {
-                    console.log(error)
-                    ctx.status = 500;
-                    ctx.body = {
-                        success: false,
-                        message: 'Card lỗi'
-                    }
-                    return;
+        let data = null
+        try {
+            data = await Cards.create(dataInsert)
 
-                }
-                ctx.body = {
-                    success: true,
-                    message: "Tạo thẻ công việc thành công",
-                    data: data,
-                }
-
-
-                return;
-            }
-
-
-            ctx.status = 404;
+        } catch (error) {
+            console.log(error)
+            ctx.status = 500;
             ctx.body = {
                 success: false,
-                message: 'Không tìm thấy Colums có id như trên'
+                message: 'Card lỗi'
             }
             return;
+
         }
+        ctx.body = {
+            success: true,
+            message: "Tạo thẻ công việc thành công",
+            data: data,
+        }
+
+
+        return;
     } catch (err) {
         console.log("Err-------", err)
         return
     }
-
     await next()
+
 
 }
 const updateCard = async (ctx, next) => {

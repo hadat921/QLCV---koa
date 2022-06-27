@@ -8,42 +8,6 @@ const app = new Koa();
 
 config();
 
-const validatecard = async (ctx, next) => {
-
-    const {
-        cardName,
-    } = ctx.request.body;
-    if (!cardName) {
-        ctx.status = 400;
-        ctx.body = {
-            success: false,
-            message: "Card không tồn tại"
-
-        }
-        return;
-    }
-
-    await next()
-}
-
-const validatecolumns = async (ctx, next) => {
-    const {
-        columnName,
-
-
-    } = ctx.request.body;
-
-    if (!columnName) {
-        ctx.status = 400;
-        ctx.body = {
-            success: false,
-            message: "colums lỗi"
-
-        }
-        return;
-    }
-    await next()
-}
 const validateList = async (ctx, next) => {
     const {
         createdAtFrom,
@@ -90,7 +54,5 @@ const validateList = async (ctx, next) => {
     await next()
 }
 module.exports = {
-    validatecard,
-    validatecolumns,
     validateList
 }

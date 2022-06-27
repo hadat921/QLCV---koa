@@ -10,10 +10,11 @@ import {
 
 import verifyToken from '../middleware/auth'
 import {
-
-    validatecolumns,
     validateList
 } from "../validators/validate"
+import {
+    validatecolumns
+} from "../validators/column"
 
 router.post('/columns', verifyToken, validatecolumns, createColumn)
 router.put('/columns/:id', verifyToken, validatecolumns, updateColumById)

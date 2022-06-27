@@ -6,10 +6,12 @@ import verifyToken from '../middleware/auth'
 
 import _ from 'lodash'
 import {
-    validatecard,
     validateList
 
 } from '../validators/validate'
+import {
+    validatecard
+} from "../validators/card"
 import {
     cards,
     createCard,
