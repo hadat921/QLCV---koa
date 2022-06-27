@@ -1,8 +1,9 @@
 import {
-    Cards,
-    Users,
-    Columns
-} from "../models"
+    Card,
+    Column,
+    User
+}
+from "../models"
 import {
     serviceCard
 } from "../service/serviceCard"
@@ -24,7 +25,7 @@ const cards = async (ctx, next) => {
     let data = null;
     if (download == "true") {
 
-        data = await Cards.findAll({
+        data = await Card.findAll({
             where: condition
         })
 
@@ -39,14 +40,14 @@ const cards = async (ctx, next) => {
         return;
     }
 
-    data = await Cards.findAll({
+    data = await Card.findAll({
         where: condition,
         include: [{
-                model: Columns,
+                model: Column,
                 as: "column_info"
             },
             {
-                model: Users,
+                model: User,
                 as: "user_info",
                 attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
             }
@@ -57,7 +58,7 @@ const cards = async (ctx, next) => {
 
     ctx.body = {
         data,
-        message: "Data nè"
+        message: "Data "
     }
     await next()
 }
@@ -80,19 +81,19 @@ const createCard = async (ctx, next) => {
         }
         let data = null
         try {
-            data = await Cards.create(dataInsert)
-
+            data = await Card.create(dataInsert)
         } catch (error) {
+            console.log("Create Card . Err when create card", error);
             ctx.status = 500;
             ctx.body = {
                 success: false,
-                message: 'Card lỗi'
+                message: 'Card failse'
             }
             return;
         }
         ctx.body = {
             success: true,
-            message: "Tạo thẻ công việc thành công",
+            message: "Create a successful card",
             data: data,
         }
 
@@ -114,7 +115,7 @@ const updateCard = async (ctx, next) => {
         idColumn,
 
     } = ctx.request.body
-    let data = await Cards.findByPk(id)
+    let data = await Card.findByPk(id)
     if (!data) {
         return;
     }
@@ -129,13 +130,13 @@ const updateCard = async (ctx, next) => {
     if (_.isEmpty(dataUpdate)) {
         ctx.body = {
             success: "true",
-            message: " Cập nhật thành công, thông tin không có sự thay đổi"
+            message: " Updated successfully, information has not changed"
         }
         return;
     }
 
     if (idColumn && data.idColumn != idColumn) {
-        let checkData = await Columns.findOne({
+        let checkData = await Column.findOne({
             where: {
                 id: idColumn
             }
@@ -144,7 +145,7 @@ const updateCard = async (ctx, next) => {
             ctx.status = 404;
             ctx.body = {
                 success: false,
-                message: 'Không tìm thấy column'
+                message: 'Column not found'
             }
             return
         }
@@ -162,14 +163,14 @@ const updateCard = async (ctx, next) => {
         ctx.status = 500;
         ctx.body = {
             success: false,
-            message: 'Card lỗi'
+            message: 'Card fails'
         }
         return;
 
     }
     ctx.body = {
         success: true,
-        message: "Update thẻ công việc thành công ",
+        message: "Update card job successful ",
         data: data
     }
     await next()
@@ -179,14 +180,14 @@ const getCardById = async (ctx, next) => {
     const {
         download
     } = ctx.query
-    const card = await Cards.findByPk(ctx.params.id, {
+    const card = await Card.findByPk(ctx.params.id, {
         include: [{
-                model: Columns,
+                model: Column,
                 as: "column_info"
             },
 
             {
-                model: Users,
+                model: User,
                 as: "user_info",
                 attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
             }
@@ -224,7 +225,7 @@ const putCardById = async (ctx, next) => {
 
     try {
 
-        const updatedCard = await Cards.findByPk(ctx.params.id)
+        const updatedCard = await Card.findByPk(ctx.params.id)
         if (!updatedCard) {
             ctx.status = 401;
             ctx.body = {
@@ -240,14 +241,14 @@ const putCardById = async (ctx, next) => {
 
         ctx.body = {
             success: true,
-            message: "Thêm card vào cột công việc thành công",
+            message: "Add tags to column work",
         }
     } catch (error) {
         console.log(error)
         ctx.status = 403;
         ctx.body = {
             success: false,
-            message: 'Card lỗi'
+            message: 'Card failse'
         }
         return;
 
@@ -262,14 +263,14 @@ const deleteCard = async (ctx, next) => {
             ctx.status = 401;
             ctx.body = {
                 success: false,
-                message: 'Không tìm thấy Cards'
+                message: 'Card not found'
             }
             return;
         }
         await deletedCards.destroy();
         ctx.body = {
             success: true,
-            message: "Xóa thành công Card"
+            message: "Delete Card Successfully"
 
         }
     } catch (error) {

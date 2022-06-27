@@ -1,6 +1,7 @@
 import {
-    Users
-} from "../models"
+    User
+}
+from "../models";
 import argon2 from "argon2"
 import jwt from "jsonwebtoken";
 import {
@@ -12,14 +13,16 @@ const register = async (ctx, next) => {
         userName,
         phoneNumber,
     } = ctx.request.body;
+
+
     try {
-        const user = await Users.findOne({
+        const user = await User.findOne({
             where: {
                 userName: userName
             }
         })
 
-        const checkData = await Users.findOne({
+        const checkData = await User.findOne({
             where: {
                 phoneNumber: phoneNumber
             }
@@ -29,7 +32,7 @@ const register = async (ctx, next) => {
             ctx.status = 400
             ctx.body = {
                 success: false,
-                message: 'Tài khoản đã tồn tại'
+                message: 'Account already exists'
             }
             return;
 
@@ -41,12 +44,12 @@ const register = async (ctx, next) => {
                 password: hashedpassword,
                 phoneNumber
             }
-            const newUser = await Users.create(dataInsert)
+            const newUser = await User.create(dataInsert)
             await newUser.save()
 
             ctx.body = {
                 success: true,
-                message: 'Đăng kí tài khoản thành công',
+                message: 'Successful account registration',
             }
             return
         }
@@ -79,7 +82,7 @@ const login = async (ctx, next) => {
     }
     try {
 
-        const user = await Users.findOne({
+        const user = await User.findOne({
 
             where: {
                 userName: userName.toLowerCase().toString()
@@ -115,7 +118,7 @@ const login = async (ctx, next) => {
         ctx.body = {
             userName: userName,
             success: true,
-            message: 'Login thanh cong',
+            message: 'Login successfully',
             accessToken,
 
 
@@ -133,7 +136,7 @@ const login = async (ctx, next) => {
 const logout = async (ctx, next) => {
     try {
 
-        const logoutUser = await Users.findByPk(
+        const logoutUser = await User.findByPk(
 
             ctx.state.user.id
 
@@ -143,7 +146,7 @@ const logout = async (ctx, next) => {
             ctx.status = 401;
             ctx.body = {
                 success: false,
-                message: 'Không tìm thấy User'
+                message: 'Do not find user'
 
             }
             return;
@@ -155,7 +158,7 @@ const logout = async (ctx, next) => {
         );
         ctx.body = {
             success: true,
-            message: "Logout thanh cong"
+            message: "Logout successfully"
 
         }
     } catch (error) {

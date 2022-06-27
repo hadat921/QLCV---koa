@@ -5,35 +5,34 @@ const {
     Sequelize,
     DataTypes
 } = require('sequelize');
-const User = db.define('User', {
-    userName: {
+const Card = db.define('Card', {
+    cardName: {
         type: DataTypes.STRING,
+        allowNull: true
+    },
+    attachment: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    comment: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    createBy: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    description: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    dueDate: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    idColumn: {
+        type: DataTypes.INTEGER,
         allowNull: false
-    },
-    realName: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    password: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    avatar: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    phoneNumber: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    accessToken: {
-        type: DataTypes.STRING,
-        defaultValue: "",
-
     },
 
 }, {
@@ -41,4 +40,4 @@ const User = db.define('User', {
 });
 
 
-export default User
+export default Card;

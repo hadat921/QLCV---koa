@@ -21,7 +21,7 @@ const validateAuth = async (ctx, next) => {
         ctx.status = 400;
         ctx.body = {
             success: false,
-            message: "Thieu userName"
+            message: "Missing username"
         }
         return;
     }
@@ -29,7 +29,7 @@ const validateAuth = async (ctx, next) => {
         ctx.status = 400;
         ctx.body = {
             success: false,
-            message: "tai khoan khong duoc qua 50 ki tu"
+            message: "Account must not exceed 50 characters"
         }
         return;
     }
@@ -37,7 +37,7 @@ const validateAuth = async (ctx, next) => {
         ctx.status = 400;
         ctx.body = {
             success: false,
-            message: "Thieu passWord"
+            message: "missing passWord"
 
         }
         return;
@@ -47,7 +47,7 @@ const validateAuth = async (ctx, next) => {
         ctx.status = 400;
         ctx.body = {
             success: false,
-            message: "Thieu phoneNumber"
+            message: "Missing phoneNumber"
         }
         return;
 
@@ -57,7 +57,7 @@ const validateAuth = async (ctx, next) => {
         ctx.status = 400;
         ctx.body = {
             success: false,
-            message: "Thieu email"
+            message: "Missing email"
         }
         return;
     }
@@ -66,7 +66,7 @@ const validateAuth = async (ctx, next) => {
         ctx.status = 400;
         ctx.body = {
             success: false,
-            message: "sai dinh dang email"
+            message: "Wrong format"
         }
         return;
     }
@@ -77,14 +77,13 @@ const validateAuth = async (ctx, next) => {
 const validateLogin = async (ctx, next) => {
     const {
         userName,
-        passWord,
-        phoneNumber
+        password,
     } = ctx.request.body
     if (!userName) {
         ctx.status = 400;
         ctx.body = {
             success: false,
-            message: "Thieu userName"
+            message: "Missing userName"
         }
         return;
     }
@@ -92,28 +91,18 @@ const validateLogin = async (ctx, next) => {
         ctx.status = 400;
         ctx.body = {
             success: false,
-            message: "tai khoan khong duoc qua 50 ki tu"
+            message: "Account must not exceed 50 characters"
         }
         return;
     }
-    if (!passWord) {
+    if (!password) {
         ctx.status = 400;
         ctx.body = {
             success: false,
-            message: "Thieu passWord"
+            message: "Missing passWord"
 
         }
         return;
-    }
-    if (!phoneNumber) {
-        ctx.status = 400;
-        ctx.body = {
-            success: false,
-            message: "Thieu phoneNumber"
-        }
-        return;
-
-
     }
     await next()
 

@@ -19,7 +19,7 @@ const validateList = async (ctx, next) => {
         if (!result || !result1) {
 
             ctx.body = {
-                message: "Sai định dạng, định dạng phải là YYYY-MM-DD ",
+                message: "Incorrect format, format should be YYYY-MM-DD ",
 
             }
             return
@@ -30,7 +30,7 @@ const validateList = async (ctx, next) => {
         if (!result) {
 
             ctx.body = {
-                message: "Sai định dạng, định dạng phải là YYYY-MM-DD"
+                message: "Incorrect format, format should be YYYY-MM-DD"
 
             }
             return
@@ -41,7 +41,7 @@ const validateList = async (ctx, next) => {
         if (!result) {
 
             ctx.body = {
-                message: "Sai định dạng, định dạng phải là YYYY-MM-DD ",
+                message: "Incorrect format, format should be YYYY-MM-DD",
 
             }
             return

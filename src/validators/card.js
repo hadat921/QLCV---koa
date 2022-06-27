@@ -1,6 +1,6 @@
 import {
 
-    Columns
+    Column
 } from "../models"
 import Koa from 'koa'
 const app = new Koa();
@@ -15,13 +15,13 @@ const validatecard = async (ctx, next) => {
         ctx.status = 400;
         ctx.body = {
             success: false,
-            message: "Card không tồn tại"
+            message: "Card not found"
 
         }
         return;
     }
     if (idColumn) {
-        let checkData = await Columns.findOne({
+        let checkData = await Column.findOne({
             where: {
                 id: idColumn
             }
@@ -30,7 +30,7 @@ const validatecard = async (ctx, next) => {
             ctx.status = 400;
             ctx.body = {
                 success: false,
-                message: "Khong tim thay Columns co id nhu tren"
+                message: "Not found Column by Id"
             }
             return;
         }

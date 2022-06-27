@@ -26,19 +26,11 @@ module.exports = {
             },
             idColumn: {
                 type: Sequelize.INTEGER,
-                // references: {
-                //   model: "Columns",
-                //   key: "id",
-                //   as: "idColumn"
-                // }
+
             },
             createBy: {
                 type: Sequelize.INTEGER,
-                // references: {
-                //   model: "Users",
-                //   key: "id",
-                //   as: "createBy"
-                // }
+
             },
             createdAt: {
                 allowNull: false,

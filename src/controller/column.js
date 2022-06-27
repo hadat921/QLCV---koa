@@ -1,7 +1,7 @@
 import {
-    Cards,
-    Users,
-    Columns
+    Card,
+    User,
+    Column
 } from "../models"
 import {
     convertColumn,
@@ -20,7 +20,7 @@ const columns = async (ctx, next) => {
     const columnList = await serviceColumn(condition, ctx)
     let data = null;
     if (download) {
-        data = await Columns.findAll({
+        data = await Column.findAll({
             where: condition
         })
         const result = await convertColumn(data);
@@ -34,14 +34,14 @@ const columns = async (ctx, next) => {
         return;
     }
 
-    data = await Columns.findAll({
+    data = await Column.findAll({
         where: columnList,
         include: [{
-                model: Cards,
+                model: Card,
                 as: "cards"
             },
             {
-                model: Users,
+                model: User,
                 as: "user_info",
                 attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
             }
@@ -63,13 +63,13 @@ const getColumnById = async (ctx, next) => {
     } = ctx.query
     try {
 
-        const column = await Columns.findByPk(ctx.params.id, {
+        const column = await Column.findByPk(ctx.params.id, {
             include: [{
-                    model: Cards,
+                    model: Card,
                     as: "cards"
                 },
                 {
-                    model: Users,
+                    model: User,
                     as: "user_info",
                     attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
                 }
@@ -79,7 +79,7 @@ const getColumnById = async (ctx, next) => {
             ctx.status = 400;
             ctx.body = {
                 success: false,
-                message: 'Không tìm thấy Column'
+                message: 'Column not found'
             }
             return;
         }
@@ -107,7 +107,7 @@ const getColumnById = async (ctx, next) => {
         ctx.status = 403;
         ctx.body = {
             success: false,
-            message: 'Column lỗi'
+            message: 'Column failse'
         }
         return;
 
@@ -122,7 +122,7 @@ const updateColumById = async (ctx, next) => {
 
 
     } = ctx.request.body
-    let data = await Columns.findByPk(id)
+    let data = await Column.findByPk(id)
     if (!data) {
 
         return;
@@ -143,7 +143,7 @@ const updateColumById = async (ctx, next) => {
         ctx.status = 403;
         ctx.body = {
             success: false,
-            message: 'Column Lỗi'
+            message: 'Column failse'
         }
         return;
     }
@@ -151,7 +151,7 @@ const updateColumById = async (ctx, next) => {
 
     ctx.body = {
         success: true,
-        message: "Update cot công việc thành công",
+        message: "Update column job successfully",
     }
     await next()
 }
@@ -168,19 +168,19 @@ const createColumn = async (ctx, next) => {
     let data = null
 
     try {
-        data = await Columns.create(dataInsert)
+        data = await Column.create(dataInsert)
     } catch (error) {
         console.log(error)
         ctx.status = 403;
         ctx.body = {
             success: false,
-            message: 'Column lỗi'
+            message: 'Column failse'
         }
         return;
     }
     ctx.body = {
         success: true,
-        message: "Tạo cột công việc thành công",
+        message: "Successful column job creation",
         data: data,
 
     }

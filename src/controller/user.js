@@ -1,5 +1,5 @@
 import {
-    Users
+    User
 } from "../models"
 import {
     serviceUser
@@ -19,7 +19,7 @@ const users = async (ctx, next) => {
     let data = null
     if (download == "true") {
 
-        data = await Users.findAll({
+        data = await Use.findAll({
             where: condition
         })
 
@@ -33,7 +33,7 @@ const users = async (ctx, next) => {
         ctx.body = result
         return;
     }
-    data = await Users.findAll({
+    data = await User.findAll({
         where: listUser,
         attributes: [
             'id', 'userName', 'realName', 'email', 'avatar', 'phoneNumber', 'createdAt', 'updatedAt'
@@ -56,7 +56,7 @@ const getUserById = async (ctx, next) => {
     } = ctx.query
 
     try {
-        const user = await Users.findByPk(ctx.params.id, {
+        const user = await User.findByPk(ctx.params.id, {
             attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
 
         })
@@ -76,7 +76,7 @@ const getUserById = async (ctx, next) => {
         if (!user) {
             ctx.body = {
                 success: false,
-                message: 'Không tìm thấy User'
+                message: 'User not found'
             }
             return
         }
@@ -101,7 +101,7 @@ const updateUser = async (ctx, next) => {
         email,
         avatar,
     } = ctx.request.body
-    let data = await Users.findByPk(id)
+    let data = await User.findByPk(id)
     if (!data) {
         return;
     }
@@ -132,7 +132,7 @@ const updateUser = async (ctx, next) => {
     ctx.status = 200;
     ctx.body = {
         success: true,
-        message: "Update thành công User"
+        message: "Update user succesfully"
     }
 
     await next()

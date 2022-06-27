@@ -13,7 +13,6 @@ config();
 
 let app = new Koa();
 import logger from 'koa-logger'
-
 app.use(koaBody({
     multipart: true
 }))
@@ -27,5 +26,4 @@ app
     .use(routes.allowedMethods())
 
 let PORT = getEnv("PORT")
-
 app.listen(PORT, () => console.log("Server running on PORT: " + PORT));
