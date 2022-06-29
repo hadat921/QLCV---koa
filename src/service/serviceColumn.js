@@ -1,7 +1,10 @@
 import {
-    Op
+    Op,
+    literal
 } from 'sequelize'
-
+import {
+    Db
+} from '../models'
 import moment from "moment";
 
 const serviceColumn = async (ctx) => {
@@ -9,7 +12,8 @@ const serviceColumn = async (ctx) => {
         columnName,
         createColumnBy,
         createdAtFrom,
-        createdAtTo
+        createdAtTo,
+        createdAt
     } = ctx.query
     let condition = {}
 
@@ -23,29 +27,41 @@ const serviceColumn = async (ctx) => {
             [Op.eq]: createColumnBy
         }
     }
-    if (createdAtFrom && createdAtTo) {
-        const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
-        const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
+    if (createdAt) {
+        condition.createdAt_ = Db.where(literal(`"Column"."createdAt"`), {
+            [Op.between]: [
+                moment(createdAt).startOf('dates').format("YYYY-MM-DD HH:mm:ss"),
+                moment(createdAt).endOf('dates').format("YYYY-MM-DD HH:mm:ss")
+            ]
+        })
+    }
+    if (createdAtFrom || createdAtTo) {
+        if (createdAtTo) {
 
-        condition.createdAt = {
-            [Op.between]: [from, to]
+            const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
+
+            condition.createdAt = {
+                [Op.lte]: to
+            }
+        }
+        if (createdAtFrom) {
+
+            const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
+
+            condition.createdAt = {
+                [Op.gte]: from
+            }
+        }
+        if (createdAtFrom && createdAtTo) {
+            const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
+            const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
+            condition.createdAt = {
+                [Op.between]: [from, to]
+            }
+
         }
     }
-    if (createdAtFrom) {
 
-        const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
-
-        condition.createdAt = {
-            [Op.gte]: from
-        }
-    }
-    if (createdAtTo) {
-        const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
-
-        condition.createdAt = {
-            [Op.lte]: to
-        }
-    }
     return condition;
 }
 

@@ -1,17 +1,19 @@
 import {
-    Op
+    Op,
+    literal
 } from 'sequelize'
 import moment from "moment";
 
 const serviceUser = async (ctx) => {
     const {
-
         userName,
         realName,
         email,
         phoneNumber,
         createdAtFrom,
-        createdAtTo
+        createdAtTo,
+        createdAt
+
     } = ctx.query
     let condition = {}
     if (userName) {
@@ -34,27 +36,41 @@ const serviceUser = async (ctx) => {
             [Op.eq]: phoneNumber
         }
     }
-    if (createdAtFrom && createdAtTo) {
-        const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
-        const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
-        condition.createdAt = {
-            [Op.between]: [from, to]
-        }
+    if (createdAt) {
+        condition.createdAt_ = Db.where(literal(`"User"."createdAt"`), {
+            [Op.between]: [
+                moment(createdAt).startOf('dates').format("YYYY-MM-DD HH:mm:ss"),
+                moment(createdAt).endOf('dates').format("YYYY-MM-DD HH:mm:ss")
+            ]
+        })
     }
-    if (createdAtFrom) {
-        const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
+    if (createdAtFrom || createdAtTo) {
+        if (createdAtTo) {
 
-        condition.createdAt = {
-            [Op.gte]: from
-        }
-    }
-    if (createdAtTo) {
-        const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
+            const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
 
-        condition.createdAt = {
-            [Op.lte]: to
+            condition.createdAt = {
+                [Op.lte]: to
+            }
+        }
+        if (createdAtFrom) {
+
+            const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
+
+            condition.createdAt = {
+                [Op.gte]: from
+            }
+        }
+        if (createdAtFrom && createdAtTo) {
+            const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
+            const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
+            condition.createdAt = {
+                [Op.between]: [from, to]
+            }
+
         }
     }
+
     return condition;
 
 }

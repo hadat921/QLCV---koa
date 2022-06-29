@@ -3,7 +3,7 @@ User
 from "./user";
 import Card from "./card"
 import Column from "./column"
-
+import Db from './db'
 User.hasMany(Card, {
     foreignKey: 'createBy',
     as: "cards"
@@ -34,4 +34,5 @@ export {
     Column,
     User,
     Card,
+    Db
 }

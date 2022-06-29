@@ -1,14 +1,19 @@
 import {
-    Op
+    Op,
+    literal
 } from 'sequelize'
 import moment from "moment";
+import {
+    Db
+} from '../models'
 
 const serviceCard = async (ctx) => {
     const {
         idColumn,
         cardName,
         createdAtFrom,
-        createdAtTo
+        createdAtTo,
+        createdAt
     } = ctx.query
     let condition = {}
     if (idColumn) {
@@ -21,38 +26,44 @@ const serviceCard = async (ctx) => {
             [Op.iLike]: `%${cardName}%`
         }
     }
-    if (createdAtFrom && createdAtTo) {
-        const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
-        const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
-        condition.createdAt = {
-            [Op.between]: [from, to]
-        }
-        return condition;
+    if (createdAt) {
+        condition.createdAt_ = Db.where(literal(`"Card"."createdAt"`), {
+            [Op.between]: [
+                moment(createdAt).startOf('dates').format("YYYY-MM-DD HH:mm:ss"),
+                moment(createdAt).endOf('dates').format("YYYY-MM-DD HH:mm:ss")
+            ]
+        })
 
     }
-    if (createdAtFrom) {
+    if (createdAtFrom || createdAtTo) {
+        if (createdAtTo) {
 
-        const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
+            const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
 
-        condition.createdAt = {
-            [Op.gte]: from
+            condition.createdAt = {
+                [Op.lte]: to
+            }
         }
-        return condition;
-    }
-    if (createdAtTo) {
+        if (createdAtFrom) {
 
-        const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
+            const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
 
-        condition.createdAt = {
-            [Op.lte]: to
+            condition.createdAt = {
+                [Op.gte]: from
+            }
         }
-        return condition;
+        if (createdAtFrom && createdAtTo) {
+            const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
+            const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
+            condition.createdAt = {
+                [Op.between]: [from, to]
+            }
+
+        }
     }
+
     return condition;
-
-
 }
-
 
 export {
     serviceCard
