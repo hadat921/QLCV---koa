@@ -8,7 +8,5 @@ fs.readdirSync(__dirname).forEach(function (file) {
     let name = file.substr(0, file.indexOf("."));
     let route = require("./" + name).default;
     router.use(route.routes(), route.allowedMethods());
-
-
 });
 export default router;

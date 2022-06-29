@@ -32,6 +32,9 @@ const users = async (ctx, next) => {
     }
     data = await User.findAll({
         where: listUser,
+        order: [
+            ['createdAt', 'ASC']
+        ],
         attributes: [
             'id', 'userName', 'realName', 'email', 'avatar', 'phoneNumber', 'createdAt', 'updatedAt'
         ]

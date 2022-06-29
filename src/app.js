@@ -5,8 +5,6 @@ import Koa from 'koa'
 import {
     getEnv
 } from "../src/config/index"
-
-
 let app = new Koa();
 import logger from 'koa-logger'
 app.use(koaBody({

@@ -34,6 +34,9 @@ const columns = async (ctx, next) => {
 
     data = await Column.findAll({
         where: columnList,
+        order: [
+            ['createdAt', 'ASC']
+        ],
         include: [{
                 model: Card,
                 as: "cards"

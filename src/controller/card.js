@@ -4,6 +4,7 @@ import {
     User
 }
 from "../models"
+import _ from 'lodash'
 import {
     serviceCard
 } from "../service/serviceCard"
@@ -26,6 +27,7 @@ const cards = async (ctx, next) => {
 
         data = await Card.findAll({
             where: condition
+
         })
 
         const result = await convertCard(data);
@@ -41,6 +43,9 @@ const cards = async (ctx, next) => {
 
     data = await Card.findAll({
         where: condition,
+        order: [
+            ['createdAt', 'ASC']
+        ],
         include: [{
                 model: Column,
                 as: "column_info"
@@ -130,7 +135,8 @@ const updateCard = async (ctx, next) => {
     if (_.isEmpty(dataUpdate)) {
         ctx.body = {
             success: "true",
-            message: " Updated successfully, information has not changed"
+            message: " Updated successfully, information has not changed",
+            data
         }
         return;
     }
@@ -219,10 +225,12 @@ const putCardById = async (ctx, next) => {
         idColumn,
 
     } = ctx.request.body
-
+    let dataUpdate = {}
     try {
-
         const updatedCard = await Card.findByPk(ctx.params.id)
+        if (idColumn && updatedCard.idColumn != idColumn) {
+            dataUpdate.idColumn = idColumn;
+        }
         if (!updatedCard) {
             ctx.status = 404;
             ctx.body = {
@@ -230,9 +238,8 @@ const putCardById = async (ctx, next) => {
                 message: 'Card not found'
             }
         }
-        await updatedCard.update({
-            idColumn: idColumn
-        })
+        console.log(dataUpdate);
+        await updatedCard.update(dataUpdate)
         ctx.body = {
             success: true,
             message: "Add tags to column work",
@@ -242,10 +249,9 @@ const putCardById = async (ctx, next) => {
         ctx.status = 500;
         ctx.body = {
             success: false,
-            message: 'Card failse'
+            message: 'Card fail'
         }
         return;
-
     }
     await next()
 }

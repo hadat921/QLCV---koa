@@ -13,8 +13,6 @@ const register = async (ctx, next) => {
         userName,
         phoneNumber,
     } = ctx.request.body;
-
-
     try {
         const user = await User.findOne({
             where: {
@@ -60,8 +58,6 @@ const register = async (ctx, next) => {
             success: false,
             message: 'Error from auth'
         }
-
-
     }
     await next();
 }
@@ -113,8 +109,6 @@ const login = async (ctx, next) => {
             accessToken: accessToken
 
         })
-
-
         ctx.body = {
             userName: userName,
             success: true,
@@ -129,7 +123,6 @@ const login = async (ctx, next) => {
             success: false,
             message: 'Internal server error'
         }
-
     }
     await next()
 }

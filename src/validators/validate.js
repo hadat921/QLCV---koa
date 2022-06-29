@@ -1,3 +1,4 @@
+import moment from "moment";
 const validateList = async (ctx, next) => {
     const {
         createdAtFrom,
@@ -11,7 +12,6 @@ const validateList = async (ctx, next) => {
             ctx.body = {
                 message: "Incorrect format, format should be YYYY-MM-DD ",
                 success: false
-
             }
             return
         }
@@ -21,7 +21,7 @@ const validateList = async (ctx, next) => {
         if (!result) {
 
             ctx.body = {
-                message: "Incorrect format, format should be YYYY-MM-DD",
+                message: "Incorrect format, format should be YYYY-MM-DD11",
                 success: false
 
             }
@@ -33,7 +33,7 @@ const validateList = async (ctx, next) => {
         if (!result) {
 
             ctx.body = {
-                message: "Incorrect format, format should be YYYY-MM-DD",
+                message: "Incorrect format, format should be YYYY-MM-DD22",
                 success: false
 
             }
