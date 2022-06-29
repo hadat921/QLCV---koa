@@ -14,15 +14,13 @@ const users = async (ctx, next) => {
         download,
 
     } = ctx.query
-    let condition = {}
-    const listUser = await serviceUser(condition, ctx)
+    const listUser = await serviceUser(ctx)
     let data = null
     if (download == "true") {
 
         data = await Use.findAll({
-            where: condition
+            where: listUser
         })
-
         const result = await convertUser(data);
         ctx.set(
             "Content-Type",
@@ -74,6 +72,7 @@ const getUserById = async (ctx, next) => {
         }
 
         if (!user) {
+            ctx.status = 404;
             ctx.body = {
                 success: false,
                 message: 'User not found'
@@ -82,7 +81,8 @@ const getUserById = async (ctx, next) => {
         }
         ctx.body = {
             success: true,
-            user
+            user,
+            message: "Data User"
         }
     } catch (error) {
         console.log(error)
@@ -129,7 +129,6 @@ const updateUser = async (ctx, next) => {
         return;
 
     }
-    ctx.status = 200;
     ctx.body = {
         success: true,
         message: "Update user succesfully"

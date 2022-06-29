@@ -58,7 +58,7 @@ const register = async (ctx, next) => {
         ctx.status = 500;
         ctx.body = {
             success: false,
-            message: 'Error'
+            message: 'Error from auth'
         }
 
 
@@ -143,7 +143,7 @@ const logout = async (ctx, next) => {
         )
         if (logoutUser.accessToken == null) {
 
-            ctx.status = 401;
+            ctx.status = 404;
             ctx.body = {
                 success: false,
                 message: 'Do not find user'

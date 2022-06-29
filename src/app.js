@@ -3,13 +3,9 @@ import routes from './router'
 import bodyParser from 'koa-bodyparser';
 import Koa from 'koa'
 import {
-    config
-} from "dotenv"
-import {
     getEnv
 } from "../src/config/index"
 
-config();
 
 let app = new Koa();
 import logger from 'koa-logger'

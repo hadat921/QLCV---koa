@@ -49,6 +49,6 @@ const serviceCard = async (ctx) => {
 }
 
 
-module.exports = {
+export default {
     serviceCard
 }

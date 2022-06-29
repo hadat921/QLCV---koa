@@ -16,12 +16,11 @@ const columns = async (ctx, next) => {
         download,
 
     } = ctx.query
-    let condition = {}
-    const columnList = await serviceColumn(condition, ctx)
+    const columnList = await serviceColumn(ctx)
     let data = null;
     if (download) {
         data = await Column.findAll({
-            where: condition
+            where: columnList
         })
         const result = await convertColumn(data);
         ctx.set(
@@ -49,10 +48,10 @@ const columns = async (ctx, next) => {
 
 
     })
-    ctx.status = 200;
     ctx.body = {
         success: true,
-        data
+        data,
+        message: "Data Columns"
     }
 
     await next()
@@ -76,7 +75,7 @@ const getColumnById = async (ctx, next) => {
             ]
         })
         if (!column) {
-            ctx.status = 400;
+            ctx.status = 404;
             ctx.body = {
                 success: false,
                 message: 'Column not found'
@@ -95,16 +94,16 @@ const getColumnById = async (ctx, next) => {
             return;
 
         }
-        ctx.status = 200;
         ctx.body = {
             success: true,
-            column
+            column,
+            message: "Data Columns"
         }
 
 
     } catch (error) {
         console.log(error)
-        ctx.status = 403;
+        ctx.status = 500;
         ctx.body = {
             success: false,
             message: 'Column failse'
@@ -140,14 +139,13 @@ const updateColumById = async (ctx, next) => {
         await data.update(dataUpdate)
     } catch (error) {
         console.log(error)
-        ctx.status = 403;
+        ctx.status = 500;
         ctx.body = {
             success: false,
             message: 'Column failse'
         }
         return;
     }
-    ctx.status = 200;
 
     ctx.body = {
         success: true,
@@ -171,7 +169,7 @@ const createColumn = async (ctx, next) => {
         data = await Column.create(dataInsert)
     } catch (error) {
         console.log(error)
-        ctx.status = 403;
+        ctx.status = 500;
         ctx.body = {
             success: false,
             message: 'Column failse'

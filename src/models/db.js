@@ -1,11 +1,11 @@
 import {
   getEnv
 } from '../config';
-const {
+import {
   Sequelize
-} = require('sequelize');
-const db = new Sequelize('koa', 'root', 'root', {
-  host: 'localhost',
+} from 'sequelize';
+const db = new Sequelize(getEnv("DB_NAME"), getEnv("DB_USERNAME"), getEnv("DB_PASSWORD"), {
+  host: getEnv("DB_HOST"),
   dialect: 'postgres',
   port: getEnv("DB_PORT"),
   logging: getEnv("DB_LOGGING") && getEnv("DB_LOGGING") == "true" ? true : false,
@@ -17,4 +17,4 @@ db.authenticate().then(async () => {
     console.error('Unable to connect to the database:', error);
   })
 
-module.exports = db
+export default db;

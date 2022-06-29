@@ -1,14 +1,4 @@
-import {
-    config
-} from 'dotenv'
-
-import Koa from 'koa'
 import emailvalidator from "email-validator"
-const app = new Koa();
-
-config();
-
-
 const validateAuth = async (ctx, next) => {
     const {
         userName,

@@ -1,7 +1,5 @@
 import Router from "koa-router";
 import verifyToken from '../middleware/auth'
-
-import _ from 'lodash'
 import {
     validateList
 

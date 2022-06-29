@@ -1,13 +1,3 @@
-import {
-    config
-} from 'dotenv'
-
-import Koa from 'koa'
-import moment from "moment";
-const app = new Koa();
-
-config();
-
 const validateList = async (ctx, next) => {
     const {
         createdAtFrom,
@@ -20,6 +10,7 @@ const validateList = async (ctx, next) => {
 
             ctx.body = {
                 message: "Incorrect format, format should be YYYY-MM-DD ",
+                success: false
 
             }
             return
@@ -30,7 +21,8 @@ const validateList = async (ctx, next) => {
         if (!result) {
 
             ctx.body = {
-                message: "Incorrect format, format should be YYYY-MM-DD"
+                message: "Incorrect format, format should be YYYY-MM-DD",
+                success: false
 
             }
             return
@@ -42,6 +34,7 @@ const validateList = async (ctx, next) => {
 
             ctx.body = {
                 message: "Incorrect format, format should be YYYY-MM-DD",
+                success: false
 
             }
             return
@@ -50,6 +43,6 @@ const validateList = async (ctx, next) => {
 
     await next()
 }
-module.exports = {
+export {
     validateList
 }

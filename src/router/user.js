@@ -5,7 +5,7 @@ import {
     getUserById,
     updateUser
 } from "../controller/user"
-const verifyToken = require('../middleware/auth');
+import verifyToken from '../middleware/auth';
 
 router.get('/users', verifyToken, users)
 router.get('/users/:id', verifyToken, getUserById)

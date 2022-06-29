@@ -8,16 +8,16 @@
     "argon2": "^0.28.5",
     "dotenv": "^16.0.1",
     "email-validator": "^2.0.4",
-    "express": "^4.18.1",
+    
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.4",
     "koa-body": "^5.0.0",
     "koa-bodyparser": "^4.3.0",
     "koa-logger": "^3.2.1",
     "koa-router": "^10.1.1",
-    "lodash": "^4.17.21",
+    
     "moment": "^2.29.3",
-    "morgan": "^1.10.0",
+    
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.20.1",

@@ -8,10 +8,9 @@ import {
     serviceCard
 } from "../service/serviceCard"
 import moment from "moment"
-import _ from 'lodash'
 import {
-    convertCard,
-    convertCardID
+    convertCard
+
 } from "../service/cardExcel"
 
 const cards = async (ctx, next) => {
@@ -57,8 +56,9 @@ const cards = async (ctx, next) => {
 
 
     ctx.body = {
+        success: true,
         data,
-        message: "Data "
+        message: "Data card "
     }
     await next()
 }
@@ -194,7 +194,7 @@ const getCardById = async (ctx, next) => {
         ]
     })
     if (download == "true") {
-        const result = await convertCardID(card);
+        const result = await convertCard(card);
         ctx.set(
             "Content-Type",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -205,9 +205,6 @@ const getCardById = async (ctx, next) => {
         return;
 
     }
-
-
-    ctx.status = 200;
 
     ctx.body = {
         success: true,
@@ -227,25 +224,22 @@ const putCardById = async (ctx, next) => {
 
         const updatedCard = await Card.findByPk(ctx.params.id)
         if (!updatedCard) {
-            ctx.status = 401;
+            ctx.status = 404;
             ctx.body = {
                 success: false,
-                message: 'Không tìm thấy '
+                message: 'Card not found'
             }
         }
         await updatedCard.update({
             idColumn: idColumn
         })
-
-        ctx.status = 200;
-
         ctx.body = {
             success: true,
             message: "Add tags to column work",
         }
     } catch (error) {
         console.log(error)
-        ctx.status = 403;
+        ctx.status = 500;
         ctx.body = {
             success: false,
             message: 'Card failse'
@@ -260,7 +254,7 @@ const deleteCard = async (ctx, next) => {
 
         const deletedCards = await Cards.findByPk(ctx.params.id)
         if (!deletedCards) {
-            ctx.status = 401;
+            ctx.status = 404;
             ctx.body = {
                 success: false,
                 message: 'Card not found'

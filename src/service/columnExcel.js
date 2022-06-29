@@ -1,7 +1,5 @@
 import XlsxPopulate from "xlsx-populate";
 
-
-
 async function convertColumn(columns) {
     let workbook = await XlsxPopulate.fromBlankAsync();
 
@@ -53,7 +51,7 @@ async function convertColumnbyId(columns) {
 
 }
 
-module.exports = {
+export default {
     convertColumn,
     convertColumnbyId
 }

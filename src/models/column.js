@@ -1,10 +1,9 @@
 import
 db
 from './db';
-const {
-    Sequelize,
+import {
     DataTypes
-} = require('sequelize');
+} from 'sequelize'
 
 const Column = db.define('Column', {
     columnName: {

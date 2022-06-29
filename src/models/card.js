@@ -1,10 +1,10 @@
 import
 db
 from './db';
-const {
-    Sequelize,
+import {
+
     DataTypes
-} = require('sequelize');
+} from 'sequelize';
 const Card = db.define('Card', {
     cardName: {
         type: DataTypes.STRING,

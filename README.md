@@ -18,6 +18,12 @@
      3.ACESS_TOKEN_SECRET = is a Token of Json web token
      4.URL_HOST= is a link localhost.
 
+5. PORT = PORT running
+6. DB_PORT = is PORT of Database. example : postgres running on port 5432
+7. DB_HOST = host of database
+8. DB_LOGGING = turn off log of database
+9. DB_NAME = Database name
+
 ## **Running locally**
 
 1. npm run dev to start the hot-reloading development server

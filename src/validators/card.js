@@ -2,8 +2,6 @@ import {
 
     Column
 } from "../models"
-import Koa from 'koa'
-const app = new Koa();
 
 const validatecard = async (ctx, next) => {
     const {
@@ -11,7 +9,7 @@ const validatecard = async (ctx, next) => {
         idColumn,
     } = ctx.request.body;
     if (!cardName) {
-        ctx.status = 400;
+        ctx.status = 404;
         ctx.body = {
             success: false,
             message: "Card not found"
@@ -26,7 +24,7 @@ const validatecard = async (ctx, next) => {
             }
         })
         if (!checkData) {
-            ctx.status = 400;
+            ctx.status = 404;
             ctx.body = {
                 success: false,
                 message: "Not found Column by Id"

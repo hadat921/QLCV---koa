@@ -37,37 +37,9 @@ async function convertCard(card) {
 
 }
 
-async function convertCardID(card) {
-    let workbook = await XlsxPopulate.fromBlankAsync();
-    XlsxPopulate.fromBlankAsync()
-    workbook.sheet("Sheet1").cell("A1").value("id");
-    workbook.sheet("Sheet1").cell("B1").value("cardName");
-    workbook.sheet("Sheet1").cell("C1").value("dueDate");
-    workbook.sheet("Sheet1").cell("D1").value("description");
-    workbook.sheet("Sheet1").cell("E1").value("attachment");
-    workbook.sheet("Sheet1").cell("F1").value("comment");
-    workbook.sheet("Sheet1").cell("G1").value("createdAt");
-    workbook.sheet("Sheet1").cell("H1").value("updatedAt");
-    workbook.sheet("Sheet1").cell("I1").value("createBy");
-    workbook.sheet("Sheet1").cell("J1").value("idColumn");
 
 
-    workbook.sheet("Sheet1").cell("A2").value(`${card.id}`);
-    workbook.sheet("Sheet1").cell("B2").value(`${card.cardName}`);
-    workbook.sheet("Sheet1").cell("C2").value(`${card.dueDate}`);
-    workbook.sheet("Sheet1").cell("D2").value(`${card.description}`);
-    workbook.sheet("Sheet1").cell("E2").value(`${card.attachment}`);
-    workbook.sheet("Sheet1").cell("F2").value(`${card.comment}`);
-    workbook.sheet("Sheet1").cell("G2").value(`${card.createdAt}`);
-    workbook.sheet("Sheet1").cell("H2").value(`${card.updatedAt}`);
-    workbook.sheet("Sheet1").cell("I2").value(`${card.createBy}`);
-    workbook.sheet("Sheet1").cell("J2").value(`${card.idColumn}`);
-    return workbook.outputAsync()
-
-
-}
-
-module.exports = {
+export default {
     convertCard,
-    convertCardID
+
 }

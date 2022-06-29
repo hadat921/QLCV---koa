@@ -3,7 +3,7 @@ import {
 } from 'sequelize'
 import moment from "moment";
 
-const serviceUser = async (condition, ctx) => {
+const serviceUser = async (ctx) => {
     const {
 
         userName,
@@ -13,6 +13,7 @@ const serviceUser = async (condition, ctx) => {
         createdAtFrom,
         createdAtTo
     } = ctx.query
+    let condition = {}
     if (userName) {
         condition.userName = {
             [Op.substring]: userName
@@ -57,6 +58,6 @@ const serviceUser = async (condition, ctx) => {
     return condition;
 
 }
-module.exports = {
+export default {
     serviceUser
 }

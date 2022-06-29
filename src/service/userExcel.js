@@ -54,7 +54,7 @@ async function convertUserbyId(user) {
     workbook.sheet("Sheet1").cell("H2").value(`${user.updatedAt}`);
     return workbook.outputAsync()
 }
-module.exports = {
+export default {
     convertUser,
     convertUserbyId
 }

@@ -5,13 +5,14 @@ import {
 import moment from "moment";
 
 
-const serviceColumn = async (condition, ctx) => {
+const serviceColumn = async (ctx) => {
     const {
         columnName,
         createColumnBy,
         createdAtFrom,
         createdAtTo
     } = ctx.query
+    let condition = {}
 
     if (columnName) {
         condition.columnName = {
@@ -49,6 +50,6 @@ const serviceColumn = async (condition, ctx) => {
     return condition;
 }
 
-module.exports = {
+export default {
     serviceColumn
 }

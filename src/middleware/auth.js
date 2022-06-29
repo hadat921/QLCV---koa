@@ -1,15 +1,7 @@
 import jwt from "jsonwebtoken"
 import {
-    config
-} from 'dotenv'
-import {
     getEnv
 } from "../config/index"
-
-import Koa from 'koa'
-const app = new Koa();
-
-config();
 
 const verifyToken = async (ctx, next) => {
 
@@ -19,10 +11,10 @@ const verifyToken = async (ctx, next) => {
 
 
     if (!authorization) {
-        ctx.status = 401;
+        ctx.status = 404;
         ctx.body = {
             success: false,
-            message: 'Không tìm thấy AccessToken'
+            message: 'Access Token not found'
         }
         return;
     }
@@ -36,14 +28,14 @@ const verifyToken = async (ctx, next) => {
 
     } catch (error) {
         console.log(error)
-        ctx.status = 403;
+        ctx.status = 500;
         ctx.body = {
             success: false,
-            message: 'AccessToken Sai'
+            message: 'AccessToken missing'
         }
         return;
 
     }
     await next()
 }
-module.exports = verifyToken
+export default verifyToken

@@ -1,13 +1,3 @@
-import {
-    config
-} from 'dotenv'
-
-import Koa from 'koa'
-const app = new Koa();
-
-config();
-
-
 const validatecolumns = async (ctx, next) => {
     const {
         columnName,
