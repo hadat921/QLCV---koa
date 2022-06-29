@@ -11,7 +11,7 @@ const db = new Sequelize(getEnv("DB_NAME"), getEnv("DB_USERNAME"), getEnv("DB_PA
   logging: getEnv("DB_LOGGING") && getEnv("DB_LOGGING") == "true" ? true : false,
 })
 db.authenticate().then(async () => {
-    console.log('Connection thanh cong');
+    console.log('Connection successfully');
   })
   .catch((error) => {
     console.error('Unable to connect to the database:', error);

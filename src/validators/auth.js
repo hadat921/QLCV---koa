@@ -27,7 +27,7 @@ const validateAuth = async (ctx, next) => {
         ctx.status = 400;
         ctx.body = {
             success: false,
-            message: "missing passWord"
+            message: "Missing password"
 
         }
         return;
@@ -37,11 +37,9 @@ const validateAuth = async (ctx, next) => {
         ctx.status = 400;
         ctx.body = {
             success: false,
-            message: "Missing phoneNumber"
+            message: "Missing phonenumber"
         }
         return;
-
-
     }
     if (!email) {
         ctx.status = 400;

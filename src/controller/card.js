@@ -252,7 +252,7 @@ const putCardById = async (ctx, next) => {
 const deleteCard = async (ctx, next) => {
     try {
 
-        const deletedCards = await Cards.findByPk(ctx.params.id)
+        const deletedCards = await Card.findByPk(ctx.params.id)
         if (!deletedCards) {
             ctx.status = 404;
             ctx.body = {

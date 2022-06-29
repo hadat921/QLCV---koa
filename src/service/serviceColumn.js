@@ -4,7 +4,6 @@ import {
 
 import moment from "moment";
 
-
 const serviceColumn = async (ctx) => {
     const {
         columnName,

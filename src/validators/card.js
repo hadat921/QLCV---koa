@@ -27,7 +27,7 @@ const validatecard = async (ctx, next) => {
             ctx.status = 404;
             ctx.body = {
                 success: false,
-                message: "Not found Column by Id"
+                message: "Not found Column by id"
             }
             return;
         }
