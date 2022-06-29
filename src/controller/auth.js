@@ -146,7 +146,7 @@ const logout = async (ctx, next) => {
             ctx.status = 404;
             ctx.body = {
                 success: false,
-                message: 'Do not find user'
+                message: 'User not found'
 
             }
             return;

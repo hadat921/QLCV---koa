@@ -6,8 +6,6 @@ import {
     updateColumById,
     createColumn
 } from "../controller/column"
-
-
 import verifyToken from '../middleware/auth'
 import {
     validateList
@@ -20,4 +18,4 @@ router.post('/columns', verifyToken, validatecolumns, createColumn)
 router.put('/columns/:id', verifyToken, validatecolumns, updateColumById)
 router.get('/columns/:id', verifyToken, getColumnById)
 router.get('/columns', verifyToken, validateList, columns)
-module.exports = router;
+export default router;

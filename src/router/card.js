@@ -24,4 +24,4 @@ router.get('/cards/:id', verifyToken, getCardById)
 router.delete('/cards/:id', verifyToken, deleteCard)
 router.put('/cards-column/:id', verifyToken, putCardById, )
 
-module.exports = router;
+export default router;

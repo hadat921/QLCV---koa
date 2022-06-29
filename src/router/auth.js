@@ -14,4 +14,5 @@ import {
 router.post('/register', validateAuth, register)
 router.post('/login', validateLogin, login)
 router.put('/logout', verifyToken, logout)
-module.exports = router;
+
+export default router;

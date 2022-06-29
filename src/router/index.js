@@ -6,10 +6,9 @@ fs.readdirSync(__dirname).forEach(function (file) {
     if (file == "index.js")
         return;
     let name = file.substr(0, file.indexOf("."));
-    let route = require("./" + name);
+    let route = require("./" + name).default;
     router.use(route.routes(), route.allowedMethods());
 
 
 });
-
-module.exports = router;
+export default router;

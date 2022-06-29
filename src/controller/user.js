@@ -140,5 +140,4 @@ export {
     users,
     getUserById,
     updateUser
-
 }
