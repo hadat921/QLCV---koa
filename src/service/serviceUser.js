@@ -58,6 +58,6 @@ const serviceUser = async (ctx) => {
     return condition;
 
 }
-export default {
+export {
     serviceUser
 }

@@ -1,7 +1,5 @@
 import XlsxPopulate from "xlsx-populate";
 
-
-
 async function convertUser(user) {
     let workbook = await XlsxPopulate.fromBlankAsync();
 
@@ -31,30 +29,6 @@ async function convertUser(user) {
     }
     return workbook.outputAsync()
 }
-async function convertUserbyId(user) {
-    let workbook = await XlsxPopulate.fromBlankAsync();
-
-
-    workbook.sheet("Sheet1").cell("A1").value("id");
-    workbook.sheet("Sheet1").cell("B1").value("userName");
-    workbook.sheet("Sheet1").cell("C1").value("realName");
-    workbook.sheet("Sheet1").cell("D1").value("email");
-    workbook.sheet("Sheet1").cell("E1").value("avtar");
-    workbook.sheet("Sheet1").cell("F1").value("phoneNumber");
-    workbook.sheet("Sheet1").cell("G1").value("createdAt");
-    workbook.sheet("Sheet1").cell("H1").value("updatedAt");
-
-    workbook.sheet("Sheet1").cell("A2").value(`${user.dataValues.id}`);
-    workbook.sheet("Sheet1").cell("B2").value(`${user.dataValues.userName}`);
-    workbook.sheet("Sheet1").cell("C2").value(`${user.dataValues.realName}`);
-    workbook.sheet("Sheet1").cell("D2").value(`${user.dataValues.email}`);
-    workbook.sheet("Sheet1").cell("E2").value(`${user.avatar}`);
-    workbook.sheet("Sheet1").cell("F2").value(`${user.phoneNumber}`);
-    workbook.sheet("Sheet1").cell("G2").value(`${user.createdAt}`);
-    workbook.sheet("Sheet1").cell("H2").value(`${user.updatedAt}`);
-    return workbook.outputAsync()
-}
-export default {
+export {
     convertUser,
-    convertUserbyId
 }

@@ -4,8 +4,7 @@ import {
     Column
 } from "../models"
 import {
-    convertColumn,
-    convertColumnbyId
+    convertColumn
 } from "../service/columnExcel"
 import {
     serviceColumn
@@ -83,7 +82,7 @@ const getColumnById = async (ctx, next) => {
             return;
         }
         if (download == "true") {
-            const result = await convertColumnbyId(column);
+            const result = await convertColumn(column);
             ctx.set(
                 "Content-Type",
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

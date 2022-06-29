@@ -37,8 +37,6 @@ async function convertCard(card) {
 
 }
 
-
-
 export default {
     convertCard,
 

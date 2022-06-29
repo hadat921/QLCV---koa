@@ -29,29 +29,7 @@ async function convertColumn(columns) {
     }
     return workbook.outputAsync()
 }
-async function convertColumnbyId(columns) {
-    let workbook = await XlsxPopulate.fromBlankAsync();
-    workbook.sheet("Sheet1").cell("A1").value("id");
-    workbook.sheet("Sheet1").cell("B1").value(`columnName`);
-    workbook.sheet("Sheet1").cell("C1").value(`createColumnBy`);
-    workbook.sheet("Sheet1").cell("D1").value(`description`);
-    workbook.sheet("Sheet1").cell("E1").value(`createdAt`);
-    workbook.sheet("Sheet1").cell("F1").value(`updatedAt`);
-
-
-    workbook.sheet("Sheet1").cell("A2").value(`${columns.id}`);
-    workbook.sheet("Sheet1").cell("B2").value(`${columns.columnName}`);
-    workbook.sheet("Sheet1").cell("C2").value(`${columns.createColumnBy}`);
-    workbook.sheet("Sheet1").cell("D2").value(`${columns.description}`);
-    workbook.sheet("Sheet1").cell("E2").value(`${columns.createdAt}`);
-    workbook.sheet("Sheet1").cell("F2").value(`${columns.updatedAt}`);
-
-    return workbook.outputAsync()
-
-
-}
-
 export default {
     convertColumn,
-    convertColumnbyId
+
 }

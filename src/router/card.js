@@ -17,7 +17,7 @@ import {
 } from "../controller/card"
 var router = new Router();
 
-router.post('/cards', validatecard, createCard)
+router.post('/cards', verifyToken, validatecard, createCard)
 router.put('/cards/:id', verifyToken, validatecard, updateCard)
 router.get('/cards', verifyToken, validateList, cards)
 router.get('/cards/:id', verifyToken, getCardById)

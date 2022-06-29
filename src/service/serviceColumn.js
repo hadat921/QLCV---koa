@@ -50,6 +50,6 @@ const serviceColumn = async (ctx) => {
     return condition;
 }
 
-export default {
+export {
     serviceColumn
 }

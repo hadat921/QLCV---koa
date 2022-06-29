@@ -10,6 +10,7 @@ const verifyToken = async (ctx, next) => {
     } = ctx.header;
 
 
+
     if (!authorization) {
         ctx.status = 404;
         ctx.body = {

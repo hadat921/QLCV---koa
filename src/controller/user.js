@@ -6,7 +6,6 @@ import {
 } from "../service/serviceUser"
 import {
     convertUser,
-    convertUserbyId
 } from "../service/userExcel"
 
 const users = async (ctx, next) => {
@@ -59,7 +58,7 @@ const getUserById = async (ctx, next) => {
 
         })
         if (download == "true") {
-            const result = await convertUserbyId(user);
+            const result = await convertUser(user);
             ctx.set(
                 "Content-Type",
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
