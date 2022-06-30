@@ -3,6 +3,9 @@ import {
     literal
 } from 'sequelize'
 import moment from "moment";
+import {
+    Db
+} from '../models'
 
 const serviceUser = async (ctx) => {
     const {
@@ -13,7 +16,6 @@ const serviceUser = async (ctx) => {
         createdAtFrom,
         createdAtTo,
         createdAt
-
     } = ctx.query
     let condition = {}
     if (userName) {
@@ -46,9 +48,7 @@ const serviceUser = async (ctx) => {
     }
     if (createdAtFrom || createdAtTo) {
         if (createdAtTo) {
-
             const to = moment(createdAtTo).endOf('day').format("YYYY-MM-DD HH:mm:ss")
-
             condition.createdAt = {
                 [Op.lte]: to
             }
@@ -56,7 +56,6 @@ const serviceUser = async (ctx) => {
         if (createdAtFrom) {
 
             const from = moment(createdAtFrom).startOf('day').format("YYYY-MM-DD HH:mm:ss")
-
             condition.createdAt = {
                 [Op.gte]: from
             }

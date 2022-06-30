@@ -22,6 +22,6 @@ router.put('/cards/:id', verifyToken, validatecard, updateCard)
 router.get('/cards', verifyToken, validateList, cards)
 router.get('/cards/:id', verifyToken, getCardById)
 router.delete('/cards/:id', verifyToken, deleteCard)
-router.put('/cards-column/:id', verifyToken, putCardById, )
+router.put('/cards-column/:id', verifyToken, putCardById)
 
 export default router;

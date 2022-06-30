@@ -8,9 +8,6 @@ const verifyToken = async (ctx, next) => {
     const {
         authorization
     } = ctx.header;
-
-
-
     if (!authorization) {
         ctx.status = 404;
         ctx.body = {
@@ -19,7 +16,6 @@ const verifyToken = async (ctx, next) => {
         }
         return;
     }
-
     try {
         const decoded = jwt.verify(authorization, getEnv("ACESS_TOKEN_SECRET"))
 

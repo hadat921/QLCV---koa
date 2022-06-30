@@ -242,7 +242,7 @@ const putCardById = async (ctx, next) => {
         await updatedCard.update(dataUpdate)
         ctx.body = {
             success: true,
-            message: "Add tags to column work",
+            message: "Add card to column success",
         }
     } catch (error) {
         console.log(error)
