@@ -52,7 +52,7 @@ const columns = async (ctx, next) => {
     })
     ctx.body = {
         success: true,
-        data,
+        data: data,
         message: "Data Columns"
     }
 
@@ -98,7 +98,7 @@ const getColumnById = async (ctx, next) => {
         }
         ctx.body = {
             success: true,
-            column,
+            data: column,
             message: "Data Columns"
         }
 
@@ -152,6 +152,7 @@ const updateColumById = async (ctx, next) => {
     ctx.body = {
         success: true,
         message: "Update column job successfully",
+        data: data
     }
     await next()
 }

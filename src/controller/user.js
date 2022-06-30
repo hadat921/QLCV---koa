@@ -44,7 +44,8 @@ const users = async (ctx, next) => {
 
     ctx.body = {
         success: true,
-        data
+        message: "Get list User success!",
+        data: data
 
     }
     await next()
@@ -83,8 +84,9 @@ const getUserById = async (ctx, next) => {
         }
         ctx.body = {
             success: true,
-            user,
-            message: "Data User"
+            message: "Data User",
+            data: user,
+
         }
     } catch (error) {
         console.log(error)
@@ -103,7 +105,9 @@ const updateUser = async (ctx, next) => {
         email,
         avatar,
     } = ctx.request.body
-    let data = await User.findByPk(id)
+    let data = await User.findByPk(id, {
+        attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
+    })
     if (!data) {
         return;
     }
@@ -133,7 +137,8 @@ const updateUser = async (ctx, next) => {
     }
     ctx.body = {
         success: true,
-        message: "Update user succesfully"
+        message: "Update user succesfully",
+        data: data
     }
 
     await next()

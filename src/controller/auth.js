@@ -113,7 +113,7 @@ const login = async (ctx, next) => {
             userName: userName,
             success: true,
             message: 'Login successfully',
-            accessToken,
+            data: accessToken,
 
 
         }
@@ -151,7 +151,8 @@ const logout = async (ctx, next) => {
         );
         ctx.body = {
             success: true,
-            message: "Logout successfully"
+            message: "Logout successfully",
+            data: logoutUser.accessToken
 
         }
     } catch (error) {

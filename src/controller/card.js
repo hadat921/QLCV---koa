@@ -31,6 +31,7 @@ const cards = async (ctx, next) => {
         })
 
         const result = await convertCard(data);
+
         ctx.set(
             "Content-Type",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -62,7 +63,7 @@ const cards = async (ctx, next) => {
 
     ctx.body = {
         success: true,
-        data,
+        data: data,
         message: "Data card "
     }
     await next()
@@ -106,6 +107,11 @@ const createCard = async (ctx, next) => {
         return;
     } catch (err) {
         console.log(err)
+        ctx.status = 500;
+        ctx.body = {
+            success: false,
+            message: 'Card fails from Err'
+        }
 
     }
     await next()
@@ -211,10 +217,11 @@ const getCardById = async (ctx, next) => {
         return;
 
     }
-
     ctx.body = {
         success: true,
-        card
+        message: "download card success!",
+        data: card
+
     }
 
     await next()
@@ -243,6 +250,7 @@ const putCardById = async (ctx, next) => {
         ctx.body = {
             success: true,
             message: "Add card to column success",
+            data: updatedCard
         }
     } catch (error) {
         console.log(error)

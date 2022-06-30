@@ -1,6 +1,7 @@
 import XlsxPopulate from "xlsx-populate";
 
 async function convertCard(card) {
+
     let workbook = await XlsxPopulate.fromBlankAsync();
 
     // Modify the workbook.
@@ -33,11 +34,13 @@ async function convertCard(card) {
 
     }
 
+
     return workbook.outputAsync()
+
 
 }
 
-export default {
-    convertCard,
+export {
+    convertCard
 
 }

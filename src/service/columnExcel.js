@@ -29,7 +29,7 @@ async function convertColumn(columns) {
     }
     return workbook.outputAsync()
 }
-export default {
+export {
     convertColumn,
 
 }
