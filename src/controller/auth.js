@@ -114,8 +114,6 @@ const login = async (ctx, next) => {
             success: true,
             message: 'Login successfully',
             data: accessToken,
-
-
         }
     } catch (error) {
         ctx.status = 500;

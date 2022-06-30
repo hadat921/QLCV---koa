@@ -47,8 +47,6 @@ const columns = async (ctx, next) => {
                 attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
             }
         ]
-
-
     })
     ctx.body = {
         success: true,
@@ -101,8 +99,6 @@ const getColumnById = async (ctx, next) => {
             data: column,
             message: "Data Columns"
         }
-
-
     } catch (error) {
         console.log(error)
         ctx.status = 500;
@@ -120,12 +116,14 @@ const updateColumById = async (ctx, next) => {
     let {
         columnName,
         description,
-
-
     } = ctx.request.body
     let data = await Column.findByPk(id)
     if (!data) {
-
+        ctx.status = 404;
+        ctx.body = {
+            success: false,
+            message: "Column not found"
+        }
         return;
     }
     let dataUpdate = {}

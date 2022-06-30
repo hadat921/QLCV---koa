@@ -11,20 +11,19 @@ const validateList = async (ctx, next) => {
         if (!result) {
 
             ctx.body = {
-                message: "Incorrect format, format should be YYYY-MM-DD11",
+                message: "Incorrect format, format should be YYYY-MM-DD",
                 success: false
 
             }
         }
-
     }
-    if (createdAtFrom && createdAtTo) {
+    if (createdAtFrom && createdAtTo && createdAt) {
         let result = moment(createdAtFrom, "YYYY-MM-DD", true).isValid();
         let result1 = moment(createdAtTo, "YYYY-MM-DD", true).isValid();
         if (!result || !result1) {
 
             ctx.body = {
-                message: "Incorrect format, format should be YYYY-MM-DD ",
+                message: "Incorrect format, format should be YYYY-MM-DD",
                 success: false
             }
             return
@@ -54,6 +53,7 @@ const validateList = async (ctx, next) => {
             return
         }
     }
+
 
     await next()
 }

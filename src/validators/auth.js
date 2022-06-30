@@ -54,7 +54,7 @@ const validateAuth = async (ctx, next) => {
         ctx.status = 400;
         ctx.body = {
             success: false,
-            message: "Wrong format"
+            message: "Wrong format email"
         }
         return;
     }
@@ -73,11 +73,11 @@ const validateLogin = async (ctx, next) => {
         }
         return;
     }
-    if (userName.length > 50) {
+    if (userName.length > 50 && userName.length < 6) {
         ctx.status = 400;
         ctx.body = {
             success: false,
-            message: "Account must not exceed 50 characters"
+            message: "Account must not exceed 50 characters and exceed 6 characters"
         }
         return;
     }
@@ -86,7 +86,6 @@ const validateLogin = async (ctx, next) => {
         ctx.body = {
             success: false,
             message: "Missing passWord"
-
         }
         return;
     }

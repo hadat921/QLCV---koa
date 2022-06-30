@@ -4,7 +4,6 @@ import {
 } from "../config/index"
 
 const verifyToken = async (ctx, next) => {
-
     const {
         authorization
     } = ctx.header;

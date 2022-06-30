@@ -39,9 +39,6 @@ const users = async (ctx, next) => {
             'id', 'userName', 'realName', 'email', 'avatar', 'phoneNumber', 'createdAt', 'updatedAt'
         ]
     })
-
-
-
     ctx.body = {
         success: true,
         message: "Get list User success!",
@@ -55,11 +52,9 @@ const getUserById = async (ctx, next) => {
     const {
         download
     } = ctx.query
-
     try {
         const user = await User.findByPk(ctx.params.id, {
             attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
-
         })
         if (download == "true") {
             const result = await convertUser(user);
@@ -68,12 +63,9 @@ const getUserById = async (ctx, next) => {
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             );
             ctx.set("Content-Disposition", "attachment; filename=" + "Report.xlsx");
-
             ctx.body = result
             return;
-
         }
-
         if (!user) {
             ctx.status = 404;
             ctx.body = {
@@ -109,6 +101,11 @@ const updateUser = async (ctx, next) => {
         attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
     })
     if (!data) {
+        ctx.status = 404;
+        ctx.body = {
+            success: false,
+            message: "User not found"
+        }
         return;
     }
     let dataUpdate = {}
@@ -125,7 +122,6 @@ const updateUser = async (ctx, next) => {
         await data.update(dataUpdate)
 
     } catch (error) {
-
         console.log(error)
         ctx.status = 500;
         ctx.body = {
@@ -133,7 +129,6 @@ const updateUser = async (ctx, next) => {
             message: 'Internal server error'
         }
         return;
-
     }
     ctx.body = {
         success: true,

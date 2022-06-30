@@ -59,8 +59,6 @@ const cards = async (ctx, next) => {
         ]
 
     })
-
-
     ctx.body = {
         success: true,
         data: data,
@@ -128,6 +126,11 @@ const updateCard = async (ctx, next) => {
     } = ctx.request.body
     let data = await Card.findByPk(id)
     if (!data) {
+        ctx.status = 404;
+        ctx.body = {
+            success: false,
+            message: "Card not found"
+        }
         return;
     }
     let dataUpdate = {}
@@ -219,7 +222,7 @@ const getCardById = async (ctx, next) => {
     }
     ctx.body = {
         success: true,
-        message: "download card success!",
+        message: "Get card by Id Success!",
         data: card
 
     }
@@ -245,7 +248,6 @@ const putCardById = async (ctx, next) => {
                 message: 'Card not found'
             }
         }
-        console.log(dataUpdate);
         await updatedCard.update(dataUpdate)
         ctx.body = {
             success: true,
@@ -288,7 +290,6 @@ const deleteCard = async (ctx, next) => {
             success: false,
             message: 'Internal server error'
         }
-
     }
     await next()
 
