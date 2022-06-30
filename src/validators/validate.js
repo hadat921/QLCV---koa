@@ -35,7 +35,7 @@ const validateList = async (ctx, next) => {
         if (!result) {
 
             ctx.body = {
-                message: "Incorrect format, format should be YYYY-MM-DD11",
+                message: "Incorrect format, format should be YYYY-MM-DD",
                 success: false
 
             }
@@ -47,7 +47,7 @@ const validateList = async (ctx, next) => {
         if (!result) {
 
             ctx.body = {
-                message: "Incorrect format, format should be YYYY-MM-DD22",
+                message: "Incorrect format, format should be YYYY-MM-DD",
                 success: false
 
             }

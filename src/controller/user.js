@@ -17,7 +17,7 @@ const users = async (ctx, next) => {
     let data = null
     if (download == "true") {
 
-        data = await Use.findAll({
+        data = await User.findAll({
             where: listUser
         })
         const result = await convertUser(data);
