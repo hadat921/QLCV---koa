@@ -7,6 +7,7 @@ import {
 import {
     convertUser,
 } from "../service/userExcel"
+import moment from "moment"
 
 const users = async (ctx, next) => {
     const {
@@ -36,7 +37,7 @@ const users = async (ctx, next) => {
             ['createdAt', 'ASC']
         ],
         attributes: [
-            'id', 'userName', 'realName', 'email', 'avatar', 'phoneNumber', 'createdAt', 'updatedAt'
+            'id', 'userName', 'realName', 'email', 'avatar', 'phoneNumber', 'createdAt', 'updatedAt', "state", 'deletedAt'
         ]
     })
     ctx.body = {
@@ -138,8 +139,58 @@ const updateUser = async (ctx, next) => {
 
     await next()
 }
+const removeUser = async (ctx, next) => {
+    try {
+        let id = ctx.params.id
+        let data = await User.findByPk(id, {
+            attributes: ["id", "userName", "state", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt", "deletedAt"]
+        })
+        if (!data) {
+            ctx.status = 404;
+            ctx.body = {
+                success: false,
+                message: "User not found"
+            }
+            return;
+        }
+        if (data.state === false) {
+            ctx.status = 404;
+            ctx.body = {
+                success: false,
+                message: "User dose not exit"
+            }
+
+            return;
+        }
+        data.state = false;
+        const deleteAt = moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
+        data.deletedAt = deleteAt
+        data.save();
+
+        ctx.body = {
+            success: true,
+            message: "Deleted successfully! ",
+            data: data
+        }
+
+        return;
+
+    } catch (error) {
+        console.log(error)
+        ctx.status = 500;
+        ctx.body = {
+            success: false,
+            message: 'Internal server error'
+        }
+        await next()
+
+
+    }
+
+}
 export {
     users,
     getUserById,
-    updateUser
+    updateUser,
+    removeUser
 }

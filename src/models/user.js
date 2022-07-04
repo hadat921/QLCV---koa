@@ -29,11 +29,20 @@ const User = db.define('User', {
         type: DataTypes.STRING,
         allowNull: true
     },
+    deletedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+    state: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+    },
     accessToken: {
         type: DataTypes.STRING,
         defaultValue: "",
 
     },
+
 
 });
 

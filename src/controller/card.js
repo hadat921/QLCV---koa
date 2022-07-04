@@ -314,11 +314,61 @@ const deleteCard = async (ctx, next) => {
     await next()
 
 }
+const removeCard = async (ctx, next) => {
+    try {
+        let id = ctx.params.id
+        let data = await Card.findByPk(id, {
+            attributes: ["id", "cardName", "state", "attachment", "comment", "createBy", "description", "createdAt", "updatedAt", "dueDate", "idColumn"]
+        })
+        console.log(data.state);
+        if (!data) {
+            ctx.status = 404;
+            ctx.body = {
+                success: false,
+                message: "Card not found"
+            }
+            return;
+        }
+        if (data.state === false) {
+            ctx.status = 404;
+            ctx.body = {
+                success: false,
+                message: "Card dose not exit"
+            }
+
+            return;
+        }
+        data.state = false;
+        const deleteAt = moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
+        data.deletedAt = deleteAt
+        data.save();
+
+        ctx.body = {
+            success: true,
+            message: "Deleted successfully! ",
+            data: data
+        }
+
+        return;
+
+    } catch (error) {
+        console.log(error)
+        ctx.status = 500;
+        ctx.body = {
+            success: false,
+            message: 'Internal server error'
+        }
+    }
+
+    await next()
+
+}
 export {
     cards,
     createCard,
     updateCard,
     getCardById,
     putCardById,
-    deleteCard
+    deleteCard,
+    removeCard
 }

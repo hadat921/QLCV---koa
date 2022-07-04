@@ -15,27 +15,33 @@ const serviceUser = async (ctx) => {
         phoneNumber,
         createdAtFrom,
         createdAtTo,
-        createdAt
+        createdAt,
+        state
     } = ctx.query
     let condition = {}
     if (userName) {
         condition.userName = {
-            [Op.substring]: userName
+            [Op.iLike]: `%${userName}%`
         }
     }
     if (realName) {
         condition.realName = {
-            [Op.substring]: realName
+            [Op.iLike]: `%${realName}%`
         }
     }
     if (email) {
         condition.email = {
-            [Op.substring]: email
+            [Op.iLike]: `%${email}%`
         }
     }
     if (phoneNumber) {
         condition.phoneNumber = {
             [Op.eq]: phoneNumber
+        }
+    }
+    if (state) {
+        condition.state = {
+            [Op.eq]: state
         }
     }
     if (createdAt) {

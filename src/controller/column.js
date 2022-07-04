@@ -9,6 +9,7 @@ import {
 import {
     serviceColumn
 } from "../service/serviceColumn"
+import moment from "moment"
 
 const columns = async (ctx, next) => {
     const {
@@ -186,10 +187,60 @@ const createColumn = async (ctx, next) => {
     }
     await next()
 }
+const removeColumn = async (ctx, next) => {
+    try {
+        let id = ctx.params.id
+        let data = await Column.findByPk(id, {
+            attributes: ["id", "columnName", "state", "createColumnBy", "description", "description", "createdAt", "updatedAt", "deletedAt"]
+        })
+        console.log(data.state);
+        if (!data) {
+            ctx.status = 404;
+            ctx.body = {
+                success: false,
+                message: "Column not found"
+            }
+            return;
+        }
+        if (data.state === false) {
+            ctx.status = 404;
+            ctx.body = {
+                success: false,
+                message: "Column dose not exit"
+            }
+
+            return;
+        }
+        data.state = false;
+        const deleteAt = moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
+        data.deletedAt = deleteAt
+        data.save();
+
+        ctx.body = {
+            success: true,
+            message: "Deleted successfully! ",
+            data: data
+        }
+
+        return;
+
+    } catch (error) {
+        console.log(error)
+        ctx.status = 500;
+        ctx.body = {
+            success: false,
+            message: 'Internal server error'
+        }
+    }
+
+    await next()
+
+}
 
 export {
     columns,
     getColumnById,
     updateColumById,
-    createColumn
+    createColumn,
+    removeColumn
 }

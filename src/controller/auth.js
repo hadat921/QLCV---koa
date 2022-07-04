@@ -48,6 +48,7 @@ const register = async (ctx, next) => {
             ctx.body = {
                 success: true,
                 message: 'Successful account registration',
+                data: newUser,
             }
             return
         }

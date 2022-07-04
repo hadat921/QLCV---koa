@@ -13,7 +13,8 @@ const serviceCard = async (ctx) => {
         cardName,
         createdAtFrom,
         createdAtTo,
-        createdAt
+        createdAt,
+        state,
     } = ctx.query
     let condition = {}
     if (idColumn) {
@@ -21,6 +22,12 @@ const serviceCard = async (ctx) => {
             [Op.eq]: idColumn
         }
     }
+    if (state) {
+        condition.state = {
+            [Op.eq]: state
+        }
+    }
+
     if (cardName) {
         condition.cardName = {
             [Op.iLike]: `%${cardName}%`

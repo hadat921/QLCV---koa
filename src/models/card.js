@@ -34,6 +34,14 @@ const Card = db.define('Card', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    deletedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+    state: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+    }
 
 });
 
