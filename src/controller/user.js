@@ -55,7 +55,7 @@ const getUserById = async (ctx, next) => {
     } = ctx.query
     try {
         const user = await User.findByPk(ctx.params.id, {
-            attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
+            attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt", "state"]
         })
         if (download == "true") {
             const result = await convertUser(user);
@@ -72,6 +72,14 @@ const getUserById = async (ctx, next) => {
             ctx.body = {
                 success: false,
                 message: 'User not found'
+            }
+            return
+        }
+        if (user.state === false) {
+            ctx.status = 404;
+            ctx.body = {
+                success: false,
+                message: "User dose not exit"
             }
             return
         }

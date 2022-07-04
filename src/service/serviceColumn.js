@@ -13,7 +13,8 @@ const serviceColumn = async (ctx) => {
         createColumnBy,
         createdAtFrom,
         createdAtTo,
-        createdAt
+        createdAt,
+        state
     } = ctx.query
     let condition = {}
 
@@ -25,6 +26,11 @@ const serviceColumn = async (ctx) => {
     if (createColumnBy) {
         condition.createColumnBy = {
             [Op.eq]: createColumnBy
+        }
+    }
+    if (state) {
+        condition.state = {
+            [Op.eq]: state
         }
     }
     if (createdAt) {

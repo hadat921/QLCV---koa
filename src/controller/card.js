@@ -286,34 +286,6 @@ const putCardById = async (ctx, next) => {
     }
     await next()
 }
-const deleteCard = async (ctx, next) => {
-    try {
-        const deletedCards = await Card.findByPk(ctx.params.id)
-        if (!deletedCards) {
-            ctx.status = 404;
-            ctx.body = {
-                success: false,
-                message: 'Card not found'
-            }
-            return;
-        }
-        await deletedCards.destroy();
-        ctx.body = {
-            success: true,
-            message: "Delete Card Successfully"
-
-        }
-    } catch (error) {
-        console.log(error)
-        ctx.status = 500;
-        ctx.body = {
-            success: false,
-            message: 'Internal server error'
-        }
-    }
-    await next()
-
-}
 const removeCard = async (ctx, next) => {
     try {
         let id = ctx.params.id
@@ -345,7 +317,7 @@ const removeCard = async (ctx, next) => {
 
         ctx.body = {
             success: true,
-            message: "Deleted successfully! ",
+            message: "Deleted successfully!",
             data: data
         }
 
@@ -369,6 +341,5 @@ export {
     updateCard,
     getCardById,
     putCardById,
-    deleteCard,
     removeCard
 }

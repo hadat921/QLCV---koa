@@ -71,7 +71,7 @@ const getColumnById = async (ctx, next) => {
                 {
                     model: User,
                     as: "user_info",
-                    attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
+                    attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt", "state"]
                 }
             ]
         })
@@ -94,6 +94,15 @@ const getColumnById = async (ctx, next) => {
             ctx.body = result
             return;
 
+        }
+        if (column.state === false) {
+            console.log("----------");
+            ctx.status = 404;
+            ctx.body = {
+                success: false,
+                message: "Column dose not exit"
+            }
+            return
         }
         ctx.body = {
             success: true,
