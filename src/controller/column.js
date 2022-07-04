@@ -96,7 +96,6 @@ const getColumnById = async (ctx, next) => {
 
         }
         if (column.state === false) {
-            console.log("----------");
             ctx.status = 404;
             ctx.body = {
                 success: false,
@@ -202,7 +201,6 @@ const removeColumn = async (ctx, next) => {
         let data = await Column.findByPk(id, {
             attributes: ["id", "columnName", "state", "createColumnBy", "description", "description", "createdAt", "updatedAt", "deletedAt"]
         })
-        console.log(data.state);
         if (!data) {
             ctx.status = 404;
             ctx.body = {

@@ -292,7 +292,6 @@ const removeCard = async (ctx, next) => {
         let data = await Card.findByPk(id, {
             attributes: ["id", "cardName", "state", "attachment", "comment", "createBy", "description", "createdAt", "updatedAt", "dueDate", "idColumn"]
         })
-        console.log(data.state);
         if (!data) {
             ctx.status = 404;
             ctx.body = {

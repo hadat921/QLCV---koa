@@ -6,7 +6,6 @@ var parameter = new Parameter({
 const validatorColumn = async (ctx, next) => {
     try {
         var data = ctx.request.body;
-        console.log(data);
         var rule = {
             columnName: {
                 type: "string",
