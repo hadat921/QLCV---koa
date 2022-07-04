@@ -19,13 +19,11 @@ const register = async (ctx, next) => {
                 userName: userName
             }
         })
-
         const checkData = await User.findOne({
             where: {
                 phoneNumber: phoneNumber
             }
         })
-
         if (user || checkData) {
             ctx.status = 400
             ctx.body = {
@@ -36,7 +34,6 @@ const register = async (ctx, next) => {
 
         } else {
             const hashedpassword = await argon2.hash(password)
-
             let dataInsert = {
                 userName,
                 password: hashedpassword,
@@ -52,7 +49,6 @@ const register = async (ctx, next) => {
             }
             return
         }
-
     } catch (error) {
         ctx.status = 500;
         ctx.body = {
@@ -115,32 +111,22 @@ const login = async (ctx, next) => {
 }
 const logout = async (ctx, next) => {
     try {
-
-        const logoutUser = await User.findByPk(
-
-            ctx.state.user.id
-
-        )
+        const logoutUser = await User.findByPk(ctx.state.user.id)
         if (logoutUser.accessToken == null) {
-
             ctx.status = 404;
             ctx.body = {
                 success: false,
                 message: 'User not found'
-
             }
             return;
         }
         await logoutUser.update({
-                accessToken: null
-            }
-
-        );
+            accessToken: null
+        });
         ctx.body = {
             success: true,
             message: "Logout successfully",
             data: logoutUser.accessToken
-
         }
     } catch (error) {
         ctx.status = 500;
@@ -148,7 +134,6 @@ const logout = async (ctx, next) => {
             success: false,
             message: 'Internal server error'
         }
-
     }
     await next()
 }

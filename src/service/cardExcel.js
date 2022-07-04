@@ -31,11 +31,7 @@ async function convertCard(card) {
         start_row++;
 
     }
-
-
     return workbook.outputAsync()
-
-
 }
 
 export {

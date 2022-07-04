@@ -12,18 +12,14 @@ import {
     convertCard
 
 } from "../service/cardExcel"
-
 const cards = async (ctx, next) => {
     const {
         download,
 
     } = ctx.query
-
     const condition = await serviceCard(ctx)
-
     let data = null;
     if (download == "true") {
-
         data = await Card.findAll({
             where: condition
 
@@ -34,11 +30,9 @@ const cards = async (ctx, next) => {
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         );
         ctx.set("Content-Disposition", "attachment; filename=" + "Report.xlsx");
-
         ctx.body = result
         return;
     }
-
     data = await Card.findAll({
         where: condition,
         order: [
@@ -54,13 +48,11 @@ const cards = async (ctx, next) => {
                 attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
             }
         ]
-
     })
     ctx.body = {
         success: true,
         message: "Data card ",
         data: data,
-
     }
     await next()
 }
@@ -71,7 +63,6 @@ const createCard = async (ctx, next) => {
             description,
             dueDate,
             idColumn,
-
         } = ctx.request.body;
         if (idColumn) {
             let checkData = await Column.findOne({
@@ -87,7 +78,6 @@ const createCard = async (ctx, next) => {
                 }
                 return;
             }
-
         }
         let dataInsert = {
             cardName: cardName || null,
@@ -114,8 +104,6 @@ const createCard = async (ctx, next) => {
             message: "Create a successful card",
             data: data,
         }
-
-
         return;
     } catch (err) {
         console.log(err)
@@ -124,7 +112,6 @@ const createCard = async (ctx, next) => {
             success: false,
             message: 'Card fails from Err'
         }
-
     }
     await next()
 }
@@ -135,7 +122,6 @@ const updateCard = async (ctx, next) => {
         description,
         dueDate,
         idColumn,
-
     } = ctx.request.body
     let data = await Card.findByPk(id)
     if (!data) {
@@ -146,7 +132,6 @@ const updateCard = async (ctx, next) => {
         }
         return;
     }
-
     let dataUpdate = {}
     if (cardName && data.cardName != cardName) {
         dataUpdate.cardName = cardName;
@@ -155,7 +140,6 @@ const updateCard = async (ctx, next) => {
 
         dataUpdate.description = description;
     }
-
     if (idColumn && data.idColumn != idColumn) {
 
         let checkData = await Column.findOne({
@@ -173,7 +157,6 @@ const updateCard = async (ctx, next) => {
         }
         dataUpdate.idColumn = idColumn;
     }
-
     if (dueDate && data.dueDate != dueDate) {
         dataUpdate.dueDate = dueDate ? moment(dueDate).format("YYYY-MM-DD HH:mm:ss") : null;
     }
@@ -188,7 +171,6 @@ const updateCard = async (ctx, next) => {
             message: 'Card fails'
         }
         return;
-
     }
     ctx.body = {
         success: true,
@@ -196,7 +178,6 @@ const updateCard = async (ctx, next) => {
         data: data
     }
     await next()
-
 }
 const getCardById = async (ctx, next) => {
     const {
@@ -225,7 +206,6 @@ const getCardById = async (ctx, next) => {
 
         ctx.body = result
         return;
-
     }
     ctx.body = {
         success: true,
@@ -233,7 +213,6 @@ const getCardById = async (ctx, next) => {
         data: card
 
     }
-
     await next()
 }
 const putCardById = async (ctx, next) => {
@@ -254,7 +233,6 @@ const putCardById = async (ctx, next) => {
             }
             return;
         }
-
     }
     let dataUpdate = {}
     try {
@@ -306,7 +284,6 @@ const removeCard = async (ctx, next) => {
                 success: false,
                 message: "Card dose not exit"
             }
-
             return;
         }
         data.state = false;
@@ -319,9 +296,7 @@ const removeCard = async (ctx, next) => {
             message: "Deleted successfully!",
             data: data
         }
-
         return;
-
     } catch (error) {
         console.log(error)
         ctx.status = 500;
@@ -330,9 +305,7 @@ const removeCard = async (ctx, next) => {
             message: 'Internal server error'
         }
     }
-
     await next()
-
 }
 export {
     cards,

@@ -47,7 +47,6 @@ const users = async (ctx, next) => {
 
     }
     await next()
-
 }
 const getUserById = async (ctx, next) => {
     const {
@@ -87,7 +86,6 @@ const getUserById = async (ctx, next) => {
             success: true,
             message: "Data User",
             data: user,
-
         }
     } catch (error) {
         console.log(error)
@@ -180,9 +178,7 @@ const removeUser = async (ctx, next) => {
             message: "Deleted successfully! ",
             data: data
         }
-
         return;
-
     } catch (error) {
         console.log(error)
         ctx.status = 500;
@@ -191,10 +187,7 @@ const removeUser = async (ctx, next) => {
             message: 'Internal server error'
         }
         await next()
-
-
     }
-
 }
 export {
     users,

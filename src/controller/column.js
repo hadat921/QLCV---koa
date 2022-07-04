@@ -32,7 +32,6 @@ const columns = async (ctx, next) => {
         ctx.body = result
         return;
     }
-
     data = await Column.findAll({
         where: columnList,
         order: [
@@ -55,7 +54,6 @@ const columns = async (ctx, next) => {
         data: data,
 
     }
-
     await next()
 }
 const getColumnById = async (ctx, next) => {
@@ -93,7 +91,6 @@ const getColumnById = async (ctx, next) => {
 
             ctx.body = result
             return;
-
         }
         if (column.state === false) {
             ctx.status = 404;
@@ -156,7 +153,6 @@ const updateColumById = async (ctx, next) => {
         }
         return;
     }
-
     ctx.body = {
         success: true,
         message: "Update column job successfully",
@@ -175,7 +171,6 @@ const createColumn = async (ctx, next) => {
         createColumnBy: ctx.state.user.id
     }
     let data = null
-
     try {
         data = await Column.create(dataInsert)
     } catch (error) {
@@ -191,7 +186,6 @@ const createColumn = async (ctx, next) => {
         success: true,
         message: "Successful column job creation",
         data: data,
-
     }
     await next()
 }
@@ -228,9 +222,7 @@ const removeColumn = async (ctx, next) => {
             message: "Deleted successfully! ",
             data: data
         }
-
         return;
-
     } catch (error) {
         console.log(error)
         ctx.status = 500;
@@ -239,7 +231,6 @@ const removeColumn = async (ctx, next) => {
             message: 'Internal server error'
         }
     }
-
     await next()
 
 }
