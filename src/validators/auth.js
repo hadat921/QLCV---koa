@@ -1,7 +1,6 @@
 import Parameter from 'parameter';
-
 var parameter = new Parameter({
-    validateRoot: true, // restrict the being validate value must be a object
+    validateRoot: true,
 });
 
 const validatorRegister = async (ctx, next) => {
@@ -34,7 +33,6 @@ const validatorRegister = async (ctx, next) => {
             },
 
         };
-
         var errors = parameter.validate(rule, data);
         if (errors) {
             ctx.status = 400;
@@ -73,9 +71,7 @@ const validateLogin = async (ctx, next) => {
             }
 
         };
-
         var errors = parameter.validate(rule, data);
-
         if (errors) {
             ctx.status = 400;
             ctx.body = {

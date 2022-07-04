@@ -1,5 +1,4 @@
 import Parameter from 'parameter';
-
 var parameter = new Parameter({
     validateRoot: true,
 });
@@ -8,7 +7,6 @@ const validatorColumn = async (ctx, next) => {
     try {
         var data = ctx.request.body;
         console.log(data);
-
         var rule = {
             columnName: {
                 type: "string",
@@ -21,7 +19,6 @@ const validatorColumn = async (ctx, next) => {
                 allowEmpty: false,
             }
         };
-
         var errors = parameter.validate(rule, data);
         if (errors) {
             ctx.status = 400;
@@ -71,7 +68,6 @@ const validatorListColumn = async (ctx, next) => {
             },
 
         };
-
         var errors = parameter.validate(rule, data);
         if (errors) {
             ctx.status = 400;

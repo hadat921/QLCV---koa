@@ -62,7 +62,6 @@ const getColumnById = async (ctx, next) => {
         download
     } = ctx.query
     try {
-
         const column = await Column.findByPk(ctx.params.id, {
             include: [{
                     model: Card,
@@ -97,8 +96,9 @@ const getColumnById = async (ctx, next) => {
         }
         ctx.body = {
             success: true,
+            message: "Data Columns",
             data: column,
-            message: "Data Columns"
+
         }
     } catch (error) {
         console.log(error)

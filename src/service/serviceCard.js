@@ -64,7 +64,6 @@ const serviceCard = async (ctx) => {
 
     return condition;
 }
-
 export {
     serviceCard
 }

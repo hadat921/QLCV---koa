@@ -138,7 +138,6 @@ const updateUser = async (ctx, next) => {
 
     await next()
 }
-
 export {
     users,
     getUserById,

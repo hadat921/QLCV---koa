@@ -1,5 +1,4 @@
 import Parameter from 'parameter';
-
 var parameter = new Parameter({
     validateRoot: true,
 });
@@ -30,7 +29,6 @@ const validatorCard = async (ctx, next) => {
             },
 
         };
-
         var errors = parameter.validate(rule, data);
         if (errors) {
             ctx.status = 400;
@@ -80,7 +78,6 @@ const validatorListCard = async (ctx, next) => {
             },
 
         };
-
         var errors = parameter.validate(rule, data);
         if (errors) {
             ctx.status = 400;

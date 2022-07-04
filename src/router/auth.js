@@ -1,6 +1,5 @@
 import Router from "koa-router";
 import verifyToken from '../middleware/auth'
-var router = new Router();
 import {
     register,
     login,
@@ -10,6 +9,7 @@ import {
     validatorRegister,
     validateLogin
 } from "../validators/auth"
+var router = new Router();
 
 router.post('/register', validatorRegister, register)
 router.post('/login', validateLogin, login)

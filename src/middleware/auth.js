@@ -17,11 +17,9 @@ const verifyToken = async (ctx, next) => {
     }
     try {
         const decoded = jwt.verify(authorization, getEnv("ACESS_TOKEN_SECRET"))
-
         ctx.state.user = {
             id: decoded.payload
         };
-
     } catch (error) {
         console.log(error)
         ctx.status = 500;

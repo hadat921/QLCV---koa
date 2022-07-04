@@ -4,7 +4,6 @@ import {
     User
 }
 from "../models"
-import _ from 'lodash'
 import {
     serviceCard
 } from "../service/serviceCard"
@@ -29,9 +28,7 @@ const cards = async (ctx, next) => {
             where: condition
 
         })
-
         const result = await convertCard(data);
-
         ctx.set(
             "Content-Type",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -241,9 +238,7 @@ const getCardById = async (ctx, next) => {
 }
 const putCardById = async (ctx, next) => {
     const {
-
         idColumn,
-
     } = ctx.request.body
     if (idColumn) {
         let checkData = await Column.findOne({
@@ -293,7 +288,6 @@ const putCardById = async (ctx, next) => {
 }
 const deleteCard = async (ctx, next) => {
     try {
-
         const deletedCards = await Card.findByPk(ctx.params.id)
         if (!deletedCards) {
             ctx.status = 404;

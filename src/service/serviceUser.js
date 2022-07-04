@@ -69,7 +69,6 @@ const serviceUser = async (ctx) => {
 
         }
     }
-
     return condition;
 
 }

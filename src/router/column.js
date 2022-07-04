@@ -1,5 +1,4 @@
 import Router from "koa-router";
-var router = new Router();
 import {
     columns,
     getColumnById,
@@ -12,6 +11,7 @@ import {
     validatorListColumn
 
 } from "../validators/column"
+var router = new Router();
 
 router.post('/columns', verifyToken, validatorColumn, createColumn)
 router.put('/columns/:id', verifyToken, validatorColumn, updateColumById)

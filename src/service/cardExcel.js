@@ -4,7 +4,6 @@ async function convertCard(card) {
 
     let workbook = await XlsxPopulate.fromBlankAsync();
 
-    // Modify the workbook.
     workbook.sheet("Sheet1").cell("A1").value("id");
     workbook.sheet("Sheet1").cell("B1").value("cardName");
     workbook.sheet("Sheet1").cell("C1").value("dueDate");
@@ -18,7 +17,6 @@ async function convertCard(card) {
 
     let start_row = 2
     for (let i = 1; i <= card.length; i++) {
-
 
         workbook.sheet("Sheet1").cell("A" + start_row).value(`${card[i-1].id}`);
         workbook.sheet("Sheet1").cell("B" + start_row).value(`${card[i-1].cardName}`);
