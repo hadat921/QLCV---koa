@@ -1,73 +1,105 @@
-import {
+import Parameter from 'parameter';
 
-    Column
-} from "../models"
+var parameter = new Parameter({
+    validateRoot: true,
+});
 
-const validatecard = async (ctx, next) => {
-    const {
-        cardName,
-        idColumn,
-    } = ctx.request.body;
-    if (!cardName) {
-        ctx.status = 404;
-        ctx.body = {
-            success: false,
-            message: "Card not found"
-        }
-        return;
-    }
-    if (idColumn) {
-        let checkData = await Column.findOne({
-            where: {
-                id: idColumn
-            }
-        })
-        if (!checkData) {
-            ctx.status = 404;
+const validatorCard = async (ctx, next) => {
+    try {
+        var data = ctx.request.body;
+        var rule = {
+            cardName: {
+                type: "string",
+                required: false,
+                allowEmpty: false,
+            },
+            description: {
+                type: "string",
+                required: false,
+                allowEmpty: true,
+            },
+            dueDate: {
+                type: "date",
+                required: false,
+                allowEmpty: false,
+            },
+            idColumn: {
+                type: "id",
+                required: false,
+                allowEmpty: false,
+            },
+
+        };
+
+        var errors = parameter.validate(rule, data);
+        if (errors) {
+            ctx.status = 400;
             ctx.body = {
                 success: false,
-                message: "Not found Column by id"
+                message: errors
             }
             return;
         }
-
-    }
-    if (!idColumn) {
-        ctx.status = 404;
+        await next()
+    } catch (error) {
+        ctx.status = 500;
         ctx.body = {
             success: false,
-            message: "Missing columId"
+            message: " Internal Server Error"
         }
-        return;
-
-
     }
-    await next()
 }
-const validateIdColumn = async (ctx, next) => {
-    const {
-        idColumn
-    } = ctx.request.body
-    if (idColumn) {
-        let checkData = await Column.findOne({
-            where: {
-                id: idColumn
-            }
-        })
-        if (!checkData) {
-            ctx.status = 404;
+const validatorListCard = async (ctx, next) => {
+    try {
+        var data = ctx.request.query;
+        var rule = {
+            cardName: {
+                type: "string",
+                required: false,
+                allowEmpty: false,
+            },
+            createdAtFrom: {
+                type: "date",
+                required: false,
+                allowEmpty: false,
+            },
+            createdAtTo: {
+                type: "date",
+                required: false,
+                allowEmpty: false,
+            },
+            createdAt: {
+                type: "date",
+                required: false,
+                allowEmpty: false,
+            },
+            idColumn: {
+                type: "id",
+                required: false,
+                allowEmpty: false,
+            },
+
+        };
+
+        var errors = parameter.validate(rule, data);
+        if (errors) {
+            ctx.status = 400;
             ctx.body = {
                 success: false,
-                message: "Not found Column by id"
+                message: errors
             }
             return;
         }
-
+        await next()
+    } catch (error) {
+        ctx.status = 500;
+        ctx.body = {
+            success: false,
+            message: " Internal Server Error"
+        }
     }
-    await next()
 }
-
 export {
-    validatecard,
-    validateIdColumn
+    validatorCard,
+    validatorListCard
 }

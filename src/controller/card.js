@@ -61,8 +61,9 @@ const cards = async (ctx, next) => {
     })
     ctx.body = {
         success: true,
+        message: "Data card ",
         data: data,
-        message: "Data card "
+
     }
     await next()
 }
@@ -75,6 +76,22 @@ const createCard = async (ctx, next) => {
             idColumn,
 
         } = ctx.request.body;
+        if (idColumn) {
+            let checkData = await Column.findOne({
+                where: {
+                    id: idColumn
+                }
+            })
+            if (!checkData) {
+                ctx.status = 404;
+                ctx.body = {
+                    success: false,
+                    message: "Not found Column by id"
+                }
+                return;
+            }
+
+        }
         let dataInsert = {
             cardName: cardName || null,
             description: description || null,
@@ -117,7 +134,6 @@ const createCard = async (ctx, next) => {
 const updateCard = async (ctx, next) => {
     let id = ctx.params.id
     let {
-
         cardName,
         description,
         dueDate,
@@ -133,6 +149,7 @@ const updateCard = async (ctx, next) => {
         }
         return;
     }
+
     let dataUpdate = {}
     if (cardName && data.cardName != cardName) {
         dataUpdate.cardName = cardName;
@@ -141,16 +158,9 @@ const updateCard = async (ctx, next) => {
 
         dataUpdate.description = description;
     }
-    if (_.isEmpty(dataUpdate)) {
-        ctx.body = {
-            success: "true",
-            message: " Updated successfully, information has not changed",
-            data
-        }
-        return;
-    }
 
     if (idColumn && data.idColumn != idColumn) {
+
         let checkData = await Column.findOne({
             where: {
                 id: idColumn
@@ -166,10 +176,10 @@ const updateCard = async (ctx, next) => {
         }
         dataUpdate.idColumn = idColumn;
     }
+
     if (dueDate && data.dueDate != dueDate) {
         dataUpdate.dueDate = dueDate ? moment(dueDate).format("YYYY-MM-DD HH:mm:ss") : null;
     }
-
     try {
         await data.update(dataUpdate)
 
@@ -235,6 +245,22 @@ const putCardById = async (ctx, next) => {
         idColumn,
 
     } = ctx.request.body
+    if (idColumn) {
+        let checkData = await Column.findOne({
+            where: {
+                id: idColumn
+            }
+        })
+        if (!checkData) {
+            ctx.status = 404;
+            ctx.body = {
+                success: false,
+                message: "Not found Column by id"
+            }
+            return;
+        }
+
+    }
     let dataUpdate = {}
     try {
         const updatedCard = await Card.findByPk(ctx.params.id)

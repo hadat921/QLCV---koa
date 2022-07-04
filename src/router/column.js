@@ -8,14 +8,13 @@ import {
 } from "../controller/column"
 import verifyToken from '../middleware/auth'
 import {
-    validateList
-} from "../validators/validate"
-import {
-    validatecolumns
+    validatorColumn,
+    validatorListColumn
+
 } from "../validators/column"
 
-router.post('/columns', verifyToken, validatecolumns, createColumn)
-router.put('/columns/:id', verifyToken, validatecolumns, updateColumById)
+router.post('/columns', verifyToken, validatorColumn, createColumn)
+router.put('/columns/:id', verifyToken, validatorColumn, updateColumById)
 router.get('/columns/:id', verifyToken, getColumnById)
-router.get('/columns', verifyToken, validateList, columns)
+router.get('/columns', verifyToken, validatorListColumn, columns)
 export default router;

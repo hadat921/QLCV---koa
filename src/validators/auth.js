@@ -1,99 +1,101 @@
-import emailvalidator from "email-validator"
-const validateAuth = async (ctx, next) => {
-    const {
-        userName,
-        password,
-        phoneNumber,
-        email
-    } = ctx.request.body
-    const emailValid = emailvalidator.validate(email)
-    if (!userName) {
-        ctx.status = 400;
-        ctx.body = {
-            success: false,
-            message: "Missing username"
-        }
-        return;
-    }
-    if (userName.length > 50) {
-        ctx.status = 400;
-        ctx.body = {
-            success: false,
-            message: "Account must not exceed 50 characters"
-        }
-        return;
-    }
-    if (!password) {
-        ctx.status = 400;
-        ctx.body = {
-            success: false,
-            message: "Missing password"
+import Parameter from 'parameter';
 
-        }
-        return;
-    }
+var parameter = new Parameter({
+    validateRoot: true, // restrict the being validate value must be a object
+});
 
-    if (!phoneNumber) {
-        ctx.status = 400;
-        ctx.body = {
-            success: false,
-            message: "Missing phonenumber"
-        }
-        return;
-    }
-    if (!email) {
-        ctx.status = 400;
-        ctx.body = {
-            success: false,
-            message: "Missing email"
-        }
-        return;
-    }
+const validatorRegister = async (ctx, next) => {
+    try {
+        var data = ctx.request.body;
+        var rule = {
+            userName: {
+                type: "string",
+                required: true,
+                allowEmpty: false,
+                min: 6,
+                max: 50,
+            },
+            password: {
+                type: "password",
+                required: true,
+                allowEmpty: false,
+                min: 6,
+                max: 50
+            },
+            phoneNumber: {
+                type: "string",
+                required: true,
+                allowEmpty: false,
+            },
+            email: {
+                type: "email",
+                required: false,
+                allowEmpty: false,
+            },
 
-    if (!emailValid) {
-        ctx.status = 400;
+        };
+
+        var errors = parameter.validate(rule, data);
+        if (errors) {
+            ctx.status = 400;
+            ctx.body = {
+                success: false,
+                message: errors
+            }
+            return;
+        }
+        await next()
+    } catch (error) {
+        ctx.status = 500;
         ctx.body = {
             success: false,
-            message: "Wrong format email"
+            message: " Internal Server Error"
         }
-        return;
     }
-    await next()
 }
 const validateLogin = async (ctx, next) => {
-    const {
-        userName,
-        password,
-    } = ctx.request.body
-    if (!userName) {
-        ctx.status = 400;
-        ctx.body = {
-            success: false,
-            message: "Missing userName"
-        }
-        return;
-    }
-    if (userName.length > 50 && userName.length < 6) {
-        ctx.status = 400;
-        ctx.body = {
-            success: false,
-            message: "Account must not exceed 50 characters and exceed 6 characters"
-        }
-        return;
-    }
-    if (!password) {
-        ctx.status = 400;
-        ctx.body = {
-            success: false,
-            message: "Missing passWord"
-        }
-        return;
-    }
-    await next()
+    try {
+        var data = ctx.request.body;
+        var rule = {
+            userName: {
+                type: "string",
+                required: true,
+                allowEmpty: false,
+                min: 6,
+                max: 50,
+            },
+            password: {
+                type: "password",
+                required: true,
+                allowEmpty: false,
+                min: 6,
+                max: 50
+            }
 
+        };
+
+        var errors = parameter.validate(rule, data);
+
+        if (errors) {
+            ctx.status = 400;
+            ctx.body = {
+                success: false,
+                message: errors
+            }
+            return;
+        }
+        await next()
+    } catch (error) {
+        ctx.status = 500;
+        ctx.body = {
+            success: false,
+            message: " Internal Server Error"
+        }
+    }
 }
 
 export {
-    validateAuth,
+
+    validatorRegister,
     validateLogin
 }

@@ -50,8 +50,9 @@ const columns = async (ctx, next) => {
     })
     ctx.body = {
         success: true,
+        message: "Data Columns",
         data: data,
-        message: "Data Columns"
+
     }
 
     await next()

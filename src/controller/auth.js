@@ -66,20 +66,8 @@ const login = async (ctx, next) => {
         password,
         userName,
     } = ctx.request.body;
-
-    if (!userName || !password) {
-        ctx.status = 400;
-        ctx.body = {
-            success: false,
-            message: " missing username or password "
-        }
-        return;
-
-    }
     try {
-
         const user = await User.findOne({
-
             where: {
                 userName: userName.toLowerCase().toString()
             }

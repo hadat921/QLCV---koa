@@ -7,11 +7,11 @@ import {
     logout
 } from "../controller/auth"
 import {
-    validateAuth,
+    validatorRegister,
     validateLogin
 } from "../validators/auth"
 
-router.post('/register', validateAuth, register)
+router.post('/register', validatorRegister, register)
 router.post('/login', validateLogin, login)
 router.put('/logout', verifyToken, logout)
 
