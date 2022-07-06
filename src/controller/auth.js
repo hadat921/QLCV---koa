@@ -69,6 +69,14 @@ const login = async (ctx, next) => {
                 userName: userName.toLowerCase().toString()
             }
         })
+        if (user && user.state === false) {
+            ctx.status = 400;
+            ctx.body = {
+                success: false,
+                message: " user deleted!"
+            }
+            return;
+        }
         if (!user) {
             ctx.status = 400;
             ctx.body = {
@@ -88,7 +96,9 @@ const login = async (ctx, next) => {
         }
         const accessToken = jwt.sign({
             payload: user.id
-        }, getEnv("ACESS_TOKEN_SECRET"));
+        }, getEnv("ACESS_TOKEN_SECRET"), {
+            expiresIn: getEnv("EXPIRE_TOKEN")
+        });
 
         await user.update({
             accessToken: accessToken

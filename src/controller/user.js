@@ -8,6 +8,9 @@ import {
     convertUser,
 } from "../service/userExcel"
 import moment from "moment"
+import {
+    Op
+} from "sequelize"
 
 const users = async (ctx, next) => {
     const {
@@ -105,9 +108,9 @@ const updateUser = async (ctx, next) => {
         avatar,
     } = ctx.request.body
     let data = await User.findByPk(id, {
-        attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
+        attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt", "state"]
     })
-    if (!data) {
+    if (!data || data.state === false) {
         ctx.status = 404;
         ctx.body = {
             success: false,

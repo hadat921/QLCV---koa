@@ -12,6 +12,9 @@ import {
     convertCard
 
 } from "../service/cardExcel"
+import {
+    Op
+} from "sequelize"
 const cards = async (ctx, next) => {
     const {
         download,
@@ -40,11 +43,23 @@ const cards = async (ctx, next) => {
         ],
         include: [{
                 model: Column,
-                as: "column_info"
+                as: "column_info",
+                where: {
+                    state: {
+                        [Op.eq]: true,
+                    }
+                },
+                required: false,
             },
             {
                 model: User,
                 as: "user_info",
+                where: {
+                    state: {
+                        [Op.eq]: true,
+                    }
+                },
+                required: false,
                 attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
             }
         ]
@@ -192,7 +207,13 @@ const getCardById = async (ctx, next) => {
             {
                 model: User,
                 as: "user_info",
-                attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
+                where: {
+                    state: {
+                        [Op.eq]: true,
+                    }
+                },
+                required: false,
+                attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt", "state"]
             }
         ]
     })

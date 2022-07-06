@@ -10,6 +10,9 @@ import {
     serviceColumn
 } from "../service/serviceColumn"
 import moment from "moment"
+import {
+    Op
+} from "sequelize"
 
 const columns = async (ctx, next) => {
     const {
@@ -44,7 +47,13 @@ const columns = async (ctx, next) => {
             {
                 model: User,
                 as: "user_info",
-                attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
+                where: {
+                    state: {
+                        [Op.eq]: true,
+                    }
+                },
+                required: false,
+                attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt", "state"]
             }
         ]
     })
@@ -69,6 +78,12 @@ const getColumnById = async (ctx, next) => {
                 {
                     model: User,
                     as: "user_info",
+                    where: {
+                        state: {
+                            [Op.eq]: true,
+                        }
+                    },
+                    required: false,
                     attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt", "state"]
                 }
             ]
