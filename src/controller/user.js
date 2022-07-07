@@ -8,9 +8,6 @@ import {
     convertUser,
 } from "../service/userExcel"
 import moment from "moment"
-import {
-    Op
-} from "sequelize"
 
 const users = async (ctx, next) => {
     const {

@@ -15,52 +15,63 @@ import {
 } from "sequelize"
 
 const columns = async (ctx, next) => {
-    const {
-        download,
+    try {
+        const {
+            download,
 
-    } = ctx.query
-    const columnList = await serviceColumn(ctx)
-    let data = null;
-    if (download) {
+        } = ctx.query
+        const columnList = await serviceColumn(ctx)
+        let data = null;
+        if (download) {
+            data = await Column.findAll({
+                where: columnList
+            })
+            const result = await convertColumn(data);
+            ctx.set(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            ctx.set("Content-Disposition", "attachment; filename=" + "Report.xlsx");
+
+            ctx.body = result
+            return;
+        }
         data = await Column.findAll({
-            where: columnList
-        })
-        const result = await convertColumn(data);
-        ctx.set(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        ctx.set("Content-Disposition", "attachment; filename=" + "Report.xlsx");
-
-        ctx.body = result
-        return;
-    }
-    data = await Column.findAll({
-        where: columnList,
-        order: [
-            ['createdAt', 'ASC']
-        ],
-        include: [{
-                model: Card,
-                as: "cards"
-            },
-            {
-                model: User,
-                as: "user_info",
-                where: {
-                    state: {
-                        [Op.eq]: true,
-                    }
+            where: columnList,
+            order: [
+                ['createdAt', 'ASC']
+            ],
+            include: [{
+                    model: Card,
+                    as: "cards"
                 },
-                required: false,
-                attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt", "state"]
-            }
-        ]
-    })
-    ctx.body = {
-        success: true,
-        message: "Data Columns",
-        data: data,
+                {
+                    model: User,
+                    as: "user_info",
+                    where: {
+                        state: {
+                            [Op.eq]: true,
+                        }
+                    },
+                    required: false,
+                    attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt", "state"]
+                }
+            ]
+        })
+        ctx.body = {
+            success: true,
+            message: "Data Columns",
+            data: data,
+
+        }
+
+    } catch (error) {
+        ctx.status = 500;
+        ctx.body = {
+            success: false,
+            message: "internal server error",
+            error
+        }
 
     }
     await next()
@@ -176,33 +187,42 @@ const updateColumById = async (ctx, next) => {
     await next()
 }
 const createColumn = async (ctx, next) => {
-    let {
-        columnName,
-        description,
-    } = ctx.request.body
-    let dataInsert = {
-        columnName: columnName || null,
-        description: description || null,
-        createColumnBy: ctx.state.user.id
-    }
-    let data = null
     try {
-        data = await Column.create(dataInsert)
+        let {
+            columnName,
+            description,
+        } = ctx.request.body
+        let dataInsert = {
+            columnName: columnName || null,
+            description: description || null,
+            createColumnBy: ctx.state.user.id
+        }
+        let data = null
+        try {
+            data = await Column.create(dataInsert)
+        } catch (error) {
+            console.log(error)
+            ctx.status = 500;
+            ctx.body = {
+                success: false,
+                message: 'Column failse'
+            }
+            return;
+        }
+        ctx.body = {
+            success: true,
+            message: "Successful column job creation",
+            data: data,
+        }
+        await next()
     } catch (error) {
-        console.log(error)
         ctx.status = 500;
         ctx.body = {
             success: false,
-            message: 'Column failse'
+            message: "Internal server error"
         }
-        return;
+
     }
-    ctx.body = {
-        success: true,
-        message: "Successful column job creation",
-        data: data,
-    }
-    await next()
 }
 const removeColumn = async (ctx, next) => {
     try {

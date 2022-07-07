@@ -16,58 +16,69 @@ import {
     Op
 } from "sequelize"
 const cards = async (ctx, next) => {
-    const {
-        download,
+    try {
+        const {
+            download,
 
-    } = ctx.query
-    const condition = await serviceCard(ctx)
-    let data = null;
-    if (download == "true") {
+        } = ctx.query
+        const condition = await serviceCard(ctx)
+        let data = null;
+        if (download == "true") {
+            data = await Card.findAll({
+                where: condition
+
+            })
+            const result = await convertCard(data);
+            ctx.set(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            ctx.set("Content-Disposition", "attachment; filename=" + "Report.xlsx");
+            ctx.body = result
+            return;
+        }
         data = await Card.findAll({
-            where: condition
-
+            where: condition,
+            order: [
+                ['createdAt', 'ASC']
+            ],
+            include: [{
+                    model: Column,
+                    as: "column_info",
+                    where: {
+                        state: {
+                            [Op.eq]: true,
+                        }
+                    },
+                    required: false,
+                },
+                {
+                    model: User,
+                    as: "user_info",
+                    where: {
+                        state: {
+                            [Op.eq]: true,
+                        }
+                    },
+                    required: false,
+                    attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
+                }
+            ]
         })
-        const result = await convertCard(data);
-        ctx.set(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        ctx.set("Content-Disposition", "attachment; filename=" + "Report.xlsx");
-        ctx.body = result
-        return;
-    }
-    data = await Card.findAll({
-        where: condition,
-        order: [
-            ['createdAt', 'ASC']
-        ],
-        include: [{
-                model: Column,
-                as: "column_info",
-                where: {
-                    state: {
-                        [Op.eq]: true,
-                    }
-                },
-                required: false,
-            },
-            {
-                model: User,
-                as: "user_info",
-                where: {
-                    state: {
-                        [Op.eq]: true,
-                    }
-                },
-                required: false,
-                attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
-            }
-        ]
-    })
-    ctx.body = {
-        success: true,
-        message: "Data card ",
-        data: data,
+        ctx.body = {
+            success: true,
+            message: "Data card ",
+            data: data,
+        }
+
+
+    } catch (error) {
+        ctx.status = 500;
+        ctx.body = {
+            success: false,
+            message: "Internal server Error"
+        }
+
     }
     await next()
 }
@@ -217,6 +228,14 @@ const getCardById = async (ctx, next) => {
             }
         ]
     })
+    if (!card) {
+        ctx.status = 404;
+        ctx.body = {
+            success: false,
+            message: "card not found"
+        }
+        return;
+    }
     if (download == "true") {
         const result = await convertCard(card);
         ctx.set(

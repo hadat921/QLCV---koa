@@ -8,7 +8,7 @@ const verifyToken = async (ctx, next) => {
         authorization
     } = ctx.header;
     if (!authorization) {
-        ctx.status = 404;
+        ctx.status = 401;
         ctx.body = {
             success: false,
             message: 'Access Token not found'
@@ -17,6 +17,7 @@ const verifyToken = async (ctx, next) => {
     }
     try {
         const decoded = jwt.verify(authorization, getEnv("ACESS_TOKEN_SECRET"))
+        console.log(decoded);
         ctx.state.user = {
             id: decoded.payload
         };

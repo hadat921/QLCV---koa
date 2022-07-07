@@ -41,7 +41,6 @@ const register = async (ctx, next) => {
             }
             const newUser = await User.create(dataInsert)
             await newUser.save()
-
             ctx.body = {
                 success: true,
                 message: 'Successful account registration',
@@ -70,7 +69,7 @@ const login = async (ctx, next) => {
             }
         })
         if (user && user.state === false) {
-            ctx.status = 400;
+            ctx.status = 404;
             ctx.body = {
                 success: false,
                 message: " user deleted!"
@@ -78,10 +77,10 @@ const login = async (ctx, next) => {
             return;
         }
         if (!user) {
-            ctx.status = 400;
+            ctx.status = 404;
             ctx.body = {
                 success: false,
-                message: 'Incorect user name or password'
+                message: 'Incorrect username or password'
             }
             return;
         }
@@ -90,19 +89,18 @@ const login = async (ctx, next) => {
             ctx.status = 400;
             ctx.body = {
                 success: false,
-                message: 'Incorect user name or password'
+                message: 'Incorect username or password'
             }
             return;
         }
         const accessToken = jwt.sign({
             payload: user.id
         }, getEnv("ACESS_TOKEN_SECRET"), {
-            expiresIn: getEnv("EXPIRE_TOKEN")
+            algorithm: "HS256",
+            expiresIn: getEnv('EXPIRE_TOKEN')
         });
-
         await user.update({
             accessToken: accessToken
-
         })
         ctx.body = {
             userName: userName,
