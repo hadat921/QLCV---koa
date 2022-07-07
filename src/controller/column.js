@@ -145,44 +145,52 @@ const getColumnById = async (ctx, next) => {
     await next()
 }
 const updateColumById = async (ctx, next) => {
-    let id = ctx.params.id
-    let {
-        columnName,
-        description,
-    } = ctx.request.body
-    let data = await Column.findByPk(id)
-    if (!data) {
-        ctx.status = 404;
-        ctx.body = {
-            success: false,
-            message: "Column not found"
-        }
-        return;
-    }
-    let dataUpdate = {}
-
-    if (columnName && data.columnName != columnName) {
-        dataUpdate.columnName = columnName;
-    }
-    if (description && data.description != columnName) {
-        dataUpdate.description = description;
-    }
     try {
+        let id = ctx.params.id
+        let {
+            columnName,
+            description,
+        } = ctx.request.body
+        let data = await Column.findByPk(id)
+        if (!data) {
+            ctx.status = 404;
+            ctx.body = {
+                success: false,
+                message: "Column not found"
+            }
+            return;
+        }
+        let dataUpdate = {}
 
-        await data.update(dataUpdate)
+        if (columnName && data.columnName != columnName) {
+            dataUpdate.columnName = columnName;
+        }
+        if (description && data.description != columnName) {
+            dataUpdate.description = description;
+        }
+        try {
+
+            await data.update(dataUpdate)
+        } catch (error) {
+            console.log(error)
+            ctx.status = 500;
+            ctx.body = {
+                success: false,
+                message: 'Column failse'
+            }
+            return;
+        }
+        ctx.body = {
+            success: true,
+            message: "Update column job successfully",
+            data: data
+        }
     } catch (error) {
-        console.log(error)
         ctx.status = 500;
         ctx.body = {
             success: false,
-            message: 'Column failse'
+            message: "Internal Server Error"
         }
-        return;
-    }
-    ctx.body = {
-        success: true,
-        message: "Update column job successfully",
-        data: data
     }
     await next()
 }

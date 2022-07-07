@@ -142,115 +142,135 @@ const createCard = async (ctx, next) => {
     await next()
 }
 const updateCard = async (ctx, next) => {
-    let id = ctx.params.id
-    let {
-        cardName,
-        description,
-        dueDate,
-        idColumn,
-    } = ctx.request.body
-    let data = await Card.findByPk(id)
-    if (!data) {
-        ctx.status = 404;
-        ctx.body = {
-            success: false,
-            message: "Card not found"
-        }
-        return;
-    }
-    let dataUpdate = {}
-    if (cardName && data.cardName != cardName) {
-        dataUpdate.cardName = cardName;
-    }
-    if (description && data.description != description) {
-
-        dataUpdate.description = description;
-    }
-    if (idColumn && data.idColumn != idColumn) {
-
-        let checkData = await Column.findOne({
-            where: {
-                id: idColumn
-            }
-        })
-        if (!checkData) {
+    try {
+        let id = ctx.params.id
+        let {
+            cardName,
+            description,
+            dueDate,
+            idColumn,
+        } = ctx.request.body
+        let data = await Card.findByPk(id)
+        if (!data) {
             ctx.status = 404;
             ctx.body = {
                 success: false,
-                message: 'Column not found'
+                message: "Card not found"
             }
-            return
+            return;
         }
-        dataUpdate.idColumn = idColumn;
-    }
-    if (dueDate && data.dueDate != dueDate) {
-        dataUpdate.dueDate = dueDate ? moment(dueDate).format("YYYY-MM-DD HH:mm:ss") : null;
-    }
-    try {
-        await data.update(dataUpdate)
+        let dataUpdate = {}
+        if (cardName && data.cardName != cardName) {
+            dataUpdate.cardName = cardName;
+        }
+        if (description && data.description != description) {
+
+            dataUpdate.description = description;
+        }
+        if (idColumn && data.idColumn != idColumn) {
+
+            let checkData = await Column.findOne({
+                where: {
+                    id: idColumn
+                }
+            })
+            if (!checkData) {
+                ctx.status = 404;
+                ctx.body = {
+                    success: false,
+                    message: 'Column not found'
+                }
+                return
+            }
+            dataUpdate.idColumn = idColumn;
+        }
+        if (dueDate && data.dueDate != dueDate) {
+            dataUpdate.dueDate = dueDate ? moment(dueDate).format("YYYY-MM-DD HH:mm:ss") : null;
+        }
+        try {
+            await data.update(dataUpdate)
+
+        } catch (error) {
+            console.log(error)
+            ctx.status = 500;
+            ctx.body = {
+                success: false,
+                message: 'Card fails'
+            }
+            return;
+        }
+        ctx.body = {
+            success: true,
+            message: "Update card job successful ",
+            data: data
+        }
 
     } catch (error) {
-        console.log(error)
         ctx.status = 500;
         ctx.body = {
             success: false,
-            message: 'Card fails'
+            message: "Internal Server Error"
         }
-        return;
-    }
-    ctx.body = {
-        success: true,
-        message: "Update card job successful ",
-        data: data
+
     }
     await next()
 }
 const getCardById = async (ctx, next) => {
-    const {
-        download
-    } = ctx.query
-    const card = await Card.findByPk(ctx.params.id, {
-        include: [{
-                model: Column,
-                as: "column_info"
-            },
-
-            {
-                model: User,
-                as: "user_info",
-                where: {
-                    state: {
-                        [Op.eq]: true,
-                    }
+    try {
+        const {
+            download
+        } = ctx.query
+        const card = await Card.findByPk(ctx.params.id, {
+            include: [{
+                    model: Column,
+                    as: "column_info"
                 },
-                required: false,
-                attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt", "state"]
+
+                {
+                    model: User,
+                    as: "user_info",
+                    where: {
+                        state: {
+                            [Op.eq]: true,
+                        }
+                    },
+                    required: false,
+                    attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt", "state"]
+                }
+            ]
+        })
+        if (!card) {
+            ctx.status = 404;
+            ctx.body = {
+                success: false,
+                message: "card not found"
             }
-        ]
-    })
-    if (!card) {
-        ctx.status = 404;
+            return;
+        }
+        if (download == "true") {
+            const result = await convertCard(card);
+            ctx.set(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            ctx.set("Content-Disposition", "attachment; filename=" + "Report.xlsx");
+
+            ctx.body = result
+            return;
+        }
+        ctx.body = {
+            success: true,
+            message: "Get card by Id Success!",
+            data: card
+
+        }
+
+    } catch (error) {
+        ctx.status = 500;
         ctx.body = {
             success: false,
-            message: "card not found"
+            message: "Internal Server Error"
         }
-        return;
-    }
-    if (download == "true") {
-        const result = await convertCard(card);
-        ctx.set(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        ctx.set("Content-Disposition", "attachment; filename=" + "Report.xlsx");
-
-        ctx.body = result
-        return;
-    }
-    ctx.body = {
-        success: true,
-        message: "Get card by Id Success!",
-        data: card
 
     }
     await next()
