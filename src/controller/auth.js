@@ -103,10 +103,12 @@ const login = async (ctx, next) => {
             accessToken: accessToken
         })
         ctx.body = {
-            userName: userName,
-            success: true,
-            message: 'Login successfully',
-            data: accessToken,
+            data: {
+                userName: userName,
+                success: true,
+                message: 'Login successfully',
+                token: accessToken,
+            }
         }
     } catch (error) {
         ctx.status = 500;

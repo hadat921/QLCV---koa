@@ -9,12 +9,14 @@ import {
 } from "../service/serviceCard"
 import moment from "moment"
 import {
-    convertCard
+    convertCard,
+    convertCard1
 
 } from "../service/cardExcel"
 import {
     Op
-} from "sequelize"
+} from "sequelize";
+
 const cards = async (ctx, next) => {
     try {
         const {
@@ -71,6 +73,76 @@ const cards = async (ctx, next) => {
             data: data,
         }
 
+
+    } catch (error) {
+        ctx.status = 500;
+        ctx.body = {
+            success: false,
+            message: "Internal server Error"
+        }
+
+    }
+    await next()
+}
+const cards1 = async (ctx, next) => {
+    try {
+        const {
+            download,
+
+        } = ctx.query
+        const condition = await serviceCard(ctx)
+        let data = null;
+        if (download == "true") {
+            data = await Card.findAll({
+                where: condition
+
+            })
+            data = JSON.parse(JSON.stringify(data,null, " "))
+            const result = await convertCard1(data);
+        
+            ctx.set(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            ctx.set("Content-Disposition", "attachment; filename=" + "Report.xlsx");
+            ctx.body = result
+            return;
+        }
+        data = await Card.findAll({
+            where: condition,
+            order: [
+                ['createdAt', 'ASC']
+            ],
+            include: [{
+                    model: Column,
+                    as: "column_info",
+                    where: {
+                        state: {
+                            [Op.eq]: true,
+                        }
+                    },
+                    required: false,
+                },
+                {
+                    model: User,
+                    as: "user_info",
+                    where: {
+                        state: {
+                            [Op.eq]: true,
+                        }
+                    },
+                    required: false,
+                    attributes: ["id", "userName", "realName", "email", "avatar", "phoneNumber", "createdAt", "updatedAt"]
+                }
+            ]
+        })
+        console.log("============", data);
+        ctx.body = {
+            success: true,
+            message: "Data card ",
+            data: data,
+        }
+       
 
     } catch (error) {
         ctx.status = 500;
@@ -373,5 +445,6 @@ export {
     updateCard,
     getCardById,
     putCardById,
-    removeCard
+    removeCard,
+    cards1
 }

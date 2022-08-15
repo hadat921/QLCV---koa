@@ -10,7 +10,8 @@ import {
     updateCard,
     getCardById,
     putCardById,
-    removeCard
+    removeCard,
+    cards1
 } from "../controller/card"
 var router = new Router();
 
@@ -20,5 +21,7 @@ router.get('/cards', verifyToken, validatorListCard, cards)
 router.get('/cards/:id', verifyToken, getCardById)
 router.put('/cards-column/:id', verifyToken, validatorCard, putCardById)
 router.put('/cards/remove/:id', verifyToken, removeCard)
+router.get('/cards1', verifyToken, validatorListCard, cards1)
+
 
 export default router;

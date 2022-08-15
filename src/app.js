@@ -2,6 +2,7 @@ import koaBody from "koa-body";
 import routes from './router'
 import bodyParser from 'koa-bodyparser';
 import Koa from 'koa'
+import {Db} from "./models"
 import {
     getEnv
 } from "../src/config/index"
@@ -20,4 +21,4 @@ app
     .use(routes.allowedMethods())
 
 let PORT = getEnv("PORT")
-app.listen(PORT, () => console.log("Server running on PORT: " + PORT));
+app.listen(PORT, () =>  console.log("Server running on PORT: " + PORT));
